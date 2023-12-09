@@ -18,3 +18,6 @@ Welcome to FOS, a groundbreaking project designed to champion the unbridled exer
 3. **Blockchain Recording:** Each content submission is recorded as a transaction on the blockchain, providing an immutable record of existence.
 
 ## Getting Started
+
+To get started with FOS:
+

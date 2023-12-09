@@ -21,3 +21,4 @@ Welcome to FOS, a groundbreaking project designed to champion the unbridled exer
 
 To get started with FOS:
 
+1. **Create an Account:** Connect your wallet to participate and start submitting your content.

@@ -34,3 +34,5 @@ Join our vibrant community to get support, share ideas, and collaborate. Find us
 
 - [Community Forum](#)
 - [Telegram](#)
+- [Twitter](#)
+

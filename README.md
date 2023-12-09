@@ -7,4 +7,5 @@ Welcome to FOS, a groundbreaking project designed to champion the unbridled exer
 ## Features
 
 - **Immutable Content Storage:** Leveraging IPFS and blockchain technology, FOS ensures that all content is stored permanently, making censorship or alteration of authors' work impossible.
+- **Decentralized Platform:** With decentralization at its core, FOS provides a robust and resilient platform immune to centralized control and interference.
 

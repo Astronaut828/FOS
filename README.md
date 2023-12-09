@@ -14,3 +14,4 @@ Welcome to FOS, a groundbreaking project designed to champion the unbridled exer
 ## How It Works
 
 1. **Content Submission:** Users can submit their content to the FOS platform.
+2. **IPFS Storage:** Submitted content is stored on IPFS, ensuring decentralized and permanent storage.

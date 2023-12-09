@@ -40,3 +40,6 @@ Join our vibrant community to get support, share ideas, and collaborate. Find us
 
 FOS is released under [specific license], which allows for free use, modification, and distribution under certain conditions.
 
+---
+
+Embrace your freedom of speech with FOS - a platform where every voice matters.

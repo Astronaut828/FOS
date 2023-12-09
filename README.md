@@ -15,3 +15,6 @@ Welcome to FOS, a groundbreaking project designed to champion the unbridled exer
 
 1. **Content Submission:** Users can submit their content to the FOS platform.
 2. **IPFS Storage:** Submitted content is stored on IPFS, ensuring decentralized and permanent storage.
+3. **Blockchain Recording:** Each content submission is recorded as a transaction on the blockchain, providing an immutable record of existence.
+
+## Getting Started

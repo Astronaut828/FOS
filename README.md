@@ -26,3 +26,5 @@ To get started with FOS:
 
 ## Contributing
 
+We welcome contributions from everyone. If you're interested in improving FOS, please read our contribution guidelines.
+

@@ -38,3 +38,5 @@ Join our vibrant community to get support, share ideas, and collaborate. Find us
 
 ## License
 
+FOS is released under [specific license], which allows for free use, modification, and distribution under certain conditions.
+

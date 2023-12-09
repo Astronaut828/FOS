@@ -1,4 +1,4 @@
-<img src="/public/clean-logo.png" width="60%" />
+<img src="packages/nextjs/public/clean-logo.png" width="40%" />
 
 # FOS: Freedom of Speech
 

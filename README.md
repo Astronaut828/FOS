@@ -22,3 +22,5 @@ Welcome to FOS, a groundbreaking project designed to champion the unbridled exer
 To get started with FOS:
 
 1. **Create an Account:** Connect your wallet to participate and start submitting your content.
+2. **Explore and Engage:** Browse through a variety of content and engage with a global community of free thinkers.
+

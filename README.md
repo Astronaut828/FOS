@@ -1,3 +1,5 @@
+<img src="/public/clean-logo.png" width="60%" />
+
 # FOS: Freedom of Speech
 
 ## Introduction

@@ -48,19 +48,19 @@ const Home: NextPage = () => {
 
         <div className="flex items-center w-full py-6 justify-center">
           <div 
-            className="flex items-center justify-center bg-base-100 rounded-3xl px-5 py-5 w-full"
+            className="flex items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full"
             style={{ maxWidth: "95%" }}
           > 
 
             {/* Make Sticky and add scroll */}
             <div 
-              className="flex flex-col items-center justify-center bg-white opacity-80 rounded-3xl px-5 pb-5 w-full"
+              className="flex flex-col items-center justify-center bg-white opacity-80 rounded-3xl px-3 py-4 w-full"
               style={{ maxWidth: "99%" }}
             > 
 
               {/* Single Entries */}
               <div 
-                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-5"
+                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
                   style={{ maxWidth: "99%" }}
                 > 
 
@@ -69,7 +69,61 @@ const Home: NextPage = () => {
                 </div>
 
                 <div 
-                  className="bg-base-300 text-center text-xl rounded-3xl px-10 py-10 w-full"
+                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
+                  style={{ maxWidth: "99%" }}
+                > 
+
+                  <p> List of posts from Adresses you follow </p>
+
+                </div>
+
+                <div 
+                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
+                  style={{ maxWidth: "99%" }}
+                > 
+
+                  <p> List of posts from Adresses you follow </p>
+
+                </div>
+
+                <div 
+                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
+                  style={{ maxWidth: "99%" }}
+                > 
+
+                  <p> List of posts from Adresses you follow </p>
+
+                </div>
+
+                <div 
+                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
+                  style={{ maxWidth: "99%" }}
+                > 
+
+                  <p> List of posts from Adresses you follow </p>
+
+                </div>
+
+                <div 
+                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
+                  style={{ maxWidth: "99%" }}
+                > 
+
+                  <p> List of posts from Adresses you follow </p>
+
+                </div>
+
+                <div 
+                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
+                  style={{ maxWidth: "99%" }}
+                > 
+
+                  <p> List of posts from Adresses you follow </p>
+
+                </div>
+
+                <div 
+                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
                   style={{ maxWidth: "99%" }}
                 > 
 
@@ -78,7 +132,7 @@ const Home: NextPage = () => {
                 </div>
 
             </div>
-            
+
           </div>
       </div>
     </div>

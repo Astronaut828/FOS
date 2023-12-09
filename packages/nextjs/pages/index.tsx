@@ -8,8 +8,12 @@ const Home: NextPage = () => {
       <MetaHeader />
 
 {/* Search*/}
+    <div 
+      className="min-h-screen bg-base-200 bg-no-repeat bg-center" 
+      style={{ backgroundImage: "url('/assets/clean-logo.png')", backgroundSize: '500px 500px' }}
+    >
 
-      <div className="flex items-center flex-col bg-base-200 pt-5">
+      <div className="flex items-center flex-col pt-6">
 
         <div 
           className="flex flex-col bg-base-100 text-center items-center rounded-2xl w-full mx-auto py-5" 
@@ -40,24 +44,20 @@ const Home: NextPage = () => {
 
       </div>
 
-
 {/* Posts */}
 
-      <div>
-
-      <div className="flex items-center bg-base-300 w-full mt-5 px-8 py-12 justify-center">
-        <div 
-          className="bg-base-100 text-center rounded-3xl px-10 py-10 w-full"
-          style={{ maxWidth: "95%" }}
-        > 
-          <p>
-            List of posts from Adresses you follow
-          </p>
+        <div className="flex items-center w-full py-12 justify-center">
+          <div 
+            className="bg-base-100 text-center rounded-3xl px-10 py-10 w-full"
+            style={{ maxWidth: "95%" }}
+          > 
+            <p>
+              List of posts from Adresses you follow
+            </p>
         </div>
-      </div>
-
 
       </div>
+    </div>
     </>
   );
 };

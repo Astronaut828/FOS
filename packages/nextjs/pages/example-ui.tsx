@@ -16,8 +16,9 @@ const ExampleUI: NextPage = () => {
       </MetaHeader>
 
       <div className="flex items-center flex-col flex-grow">
-        <ContractData />
         <ContractInteraction />
+        <ContractData />
+        
       </div>
 
     </>

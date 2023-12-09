@@ -58,25 +58,27 @@ const Home: NextPage = () => {
               style={{ maxWidth: "99%" }}
             > 
 
-            {/* Single Entries */}
-             <div 
-                className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-5"
-                style={{ maxWidth: "99%" }}
-              > 
-
-                <p> List of posts from Adresses you follow </p>
-
-              </div>
-
+              {/* Single Entries */}
               <div 
-                className="bg-base-300 text-center text-xl rounded-3xl px-10 py-10 w-full"
-                style={{ maxWidth: "99%" }}
-              > 
+                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-5"
+                  style={{ maxWidth: "99%" }}
+                > 
 
-                <p> List of posts from Adresses you follow </p>
+                  <p> List of posts from Adresses you follow </p>
 
-              </div>
+                </div>
+
+                <div 
+                  className="bg-base-300 text-center text-xl rounded-3xl px-10 py-10 w-full"
+                  style={{ maxWidth: "99%" }}
+                > 
+
+                  <p> List of posts from Adresses you follow </p>
+
+                </div>
+
             </div>
+            
           </div>
       </div>
     </div>

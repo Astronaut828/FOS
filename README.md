@@ -11,4 +11,4 @@ Welcome to FOS, a groundbreaking project designed to champion the unbridled exer
 - **Transparent Operations:** Every transaction and submission is transparently recorded on the blockchain, promoting a culture of openness and trust.
 - **User Empowerment:** FOS is built to empower users, providing a safe space for free expression without fear of censorship or cancel culture.
 
-
+## How It Works

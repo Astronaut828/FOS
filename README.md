@@ -33,3 +33,4 @@ We welcome contributions from everyone. If you're interested in improving FOS, p
 Join our vibrant community to get support, share ideas, and collaborate. Find us on:
 
 - [Community Forum](#)
+- [Telegram](#)

@@ -12,3 +12,5 @@ Welcome to FOS, a groundbreaking project designed to champion the unbridled exer
 - **User Empowerment:** FOS is built to empower users, providing a safe space for free expression without fear of censorship or cancel culture.
 
 ## How It Works
+
+1. **Content Submission:** Users can submit their content to the FOS platform.

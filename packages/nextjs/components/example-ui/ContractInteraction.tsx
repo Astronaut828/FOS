@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { parseEther } from "viem";
-import { ArrowSmallRightIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 
 export const ContractInteraction = () => {
@@ -14,30 +14,48 @@ export const ContractInteraction = () => {
     value: parseEther("0.01"),
     onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
+      setNewGreeting(""); // Reset the newGreeting state to clear the textarea
     },
   });
 
+
   return (
-    <div className="flex bg-base-300 rounded-3xl relative pb-10 mt-5">
-
-      <div className="flex flex-col w-full mx-5 sm:mx-8 2xl:mx-20">
+    <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">
 
 
 
-        <div className="flex flex-col mt-6 px-7 py-8 bg-base-200 opacity-80 rounded-2xl shadow-lg border-2 border-primary">
-          <span className="text-4xl sm:text-6xl text-black">Set a Greeting_</span>
+
+
+          <div 
+            className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full"
+            style={{ maxWidth: "95%" }}
+          > 
+
+          <span className="text-4xl sm:text-6xl text-base-300 mb-5">articulate your opinions and ideas</span>
+
+          <textarea
+            placeholder="WHATS ON YOUR MIND?"
+            value={newGreeting}
+            style={{ 
+              maxWidth: "95%", 
+              maxHeight: "95%", 
+              height: "40vh",
+              resize: "none",
+              padding: "12px",
+            }} 
+            className="input font-bai-jamjuree w-full border border-primary rounded-3xl text-lg sm:text-xl placeholder-grey"
+            onChange={e => setNewGreeting(e.target.value)}
+          />
 
           <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
-            <input
-              type="text"
-              placeholder="Write your greeting here"
-              className="input font-bai-jamjuree w-full px-5 border border-primary text-lg sm:text-2xl placeholder-white uppercase"
-              onChange={e => setNewGreeting(e.target.value)}
-            />
+
+
             <div className="flex rounded-full border border-primary p-1 flex-shrink-0">
-              <div className="flex rounded-full border-2 border-primary p-1">
+
+
+
                 <button
-                  className="btn btn-primary rounded-full capitalize font-normal font-white w-24 flex items-center gap-1 hover:gap-2 transition-all tracking-widest"
+                  className="btn btn-primary rounded-full capitalize font-normal font-white w-30 flex items-center gap-1 hover:gap-2 transition-all tracking-widest"
                   onClick={() => writeAsync()}
                   disabled={isLoading}
                 >
@@ -45,16 +63,17 @@ export const ContractInteraction = () => {
                     <span className="loading loading-spinner loading-sm"></span>
                   ) : (
                     <>
-                      Send <ArrowSmallRightIcon className="w-3 h-3 mt-0.5" />
+                      Commit Your Msg
                     </>
                   )}
                 </button>
-              </div>
+
+
             </div>
           </div>
           
         </div>
-      </div>
+
     </div>
   );
 };

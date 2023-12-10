@@ -71,13 +71,20 @@ export const ContractData = () => {
   }, [transitionEnabled, containerRef, greetingRef]);
 
   return (
-    <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-20 mt-5 lg:py-auto max-w-[100vw] ">
+<div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">
+
       <div
-        className={`flex flex-col max-w-md bg-base-200 bg-opacity-70 rounded-2xl shadow-lg px-5 py-4 w-full ${
+        className={`flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full 
+        ${
           showAnimation ? "animate-zoom" : ""
         }`}
+        style={{ maxWidth: "95%" }}
       >
-        <div className="flex justify-between w-full">
+
+
+        <div className="flex justify-between w-full px-20">
+
+          {/* Switch Button => turn NEXT POST (Last posts) (Pagination) */}
           <button
             className="btn btn-circle btn-ghost relative bg-center bg-[url('/assets/switch-button-on.png')] bg-no-repeat"
             onClick={() => {
@@ -89,16 +96,26 @@ export const ContractData = () => {
                 transitionEnabled ? "opacity-0" : "opacity-100"
               }`}
             />
-          </button>
-          <div className="bg-secondary border border-primary rounded-xl flex">
-            <div className="p-2 py-1 border-r border-primary flex items-end">Total count</div>
+          </button> 
+ 
+
+
+          {/* Post count */}
+          <div className="border border-primary rounded-xl flex">
+            <div className="p-2 py-1 border-r border-primary flex items-end">Post count</div>
             <div className="text-4xl text-right min-w-[3rem] px-2 py-1 flex justify-end font-bai-jamjuree">
               {totalCounter?.toString() || "0"}
             </div>
           </div>
+
+
         </div>
 
-        <div className="mt-3 border border-primary bg-neutral rounded-3xl text-secondary  overflow-hidden text-[116px] whitespace-nowrap w-full uppercase tracking-tighter font-bai-jamjuree leading-tight">
+
+        {/* Marquee Text */}
+        <div className="mt-3 border border-primary bg-neutral bg-opacity-70 rounded-3xl text-secondary  overflow-hidden text-[116px] whitespace-nowrap w-full uppercase tracking-tighter font-bai-jamjuree leading-tight"
+        style={{ maxWidth: "95%" }}
+        >
           <div className="relative overflow-x-hidden" ref={containerRef}>
             {/* for speed calculating purposes */}
             <div className="absolute -left-[9999rem]" ref={greetingRef}>
@@ -122,7 +139,10 @@ export const ContractData = () => {
           </div>
         </div>
 
-        <div className="mt-3 flex items-end justify-between">
+        {/* Marquee direction button + Loading Bar
+
+         <div className="mt-3 flex bg-yellow-500 items-end justify-between">
+
           <button
             className={`btn btn-circle btn-ghost border border-primary hover:border-primary w-12 h-12 p-1 bg-neutral flex items-center ${
               isRightDirection ? "justify-start" : "justify-end"
@@ -135,13 +155,20 @@ export const ContractData = () => {
           >
             <div className="border border-primary rounded-full bg-secondary w-2 h-2" />
           </button>
+
+
           <div className="w-44 p-0.5 flex items-center bg-neutral border border-primary rounded-full">
             <div
               className="h-1.5 border border-primary rounded-full bg-secondary animate-grow"
               style={{ animationPlayState: showTransition ? "running" : "paused" }}
             />
           </div>
+
+
         </div>
+
+         */}
+
       </div>
     </div>
   );

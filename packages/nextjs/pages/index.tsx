@@ -54,22 +54,27 @@ const Home: NextPage = () => {
 
             {/* Make Sticky and add scroll */}
             <div 
-              className="flex flex-col items-center justify-center bg-white opacity-80 rounded-3xl px-3 py-4 w-full"
+              className="flex flex-col items-center justify-center bg-white bg-opacity-70 rounded-3xl px-3 py-4 w-full"
               style={{ maxWidth: "99%" }}
             > 
 
               {/* Single Entries */}
               <div 
-                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
+                  className="bg-base-300 text-left text-lg rounded-3xl w-full px-10 py-5 my-3"
                   style={{ maxWidth: "99%" }}
                 > 
 
-                  <p> List of posts from Adresses you follow </p>
+                  <p> 
+                    A pinning service is a service that accepts CIDs from a user in order to host the data associated with them.
+                    The rationale behind defining a generic pinning service API is to have a baseline functionality and interface that can be provided by pinning services, so that tools can be built on top of a common base of functionality.
+                    In this presentation, IPFS creator Juan Benet discusses current and potential pinning use cases, and how a standardized IPFS pinning API can meet these envisioned needs.
+                    The API spec in this repo is the first step towards that future.
+                  </p>
 
                 </div>
 
                 <div 
-                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
+                  className="bg-base-300 text-left text-lg rounded-3xl w-full px-10 py-5 my-3"
                   style={{ maxWidth: "99%" }}
                 > 
 
@@ -77,59 +82,6 @@ const Home: NextPage = () => {
 
                 </div>
 
-                <div 
-                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
-                  style={{ maxWidth: "99%" }}
-                > 
-
-                  <p> List of posts from Adresses you follow </p>
-
-                </div>
-
-                <div 
-                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
-                  style={{ maxWidth: "99%" }}
-                > 
-
-                  <p> List of posts from Adresses you follow </p>
-
-                </div>
-
-                <div 
-                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
-                  style={{ maxWidth: "99%" }}
-                > 
-
-                  <p> List of posts from Adresses you follow </p>
-
-                </div>
-
-                <div 
-                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
-                  style={{ maxWidth: "99%" }}
-                > 
-
-                  <p> List of posts from Adresses you follow </p>
-
-                </div>
-
-                <div 
-                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
-                  style={{ maxWidth: "99%" }}
-                > 
-
-                  <p> List of posts from Adresses you follow </p>
-
-                </div>
-
-                <div 
-                  className="bg-base-300 text-center text-xl rounded-3xl w-full px-10 py-10 my-3"
-                  style={{ maxWidth: "99%" }}
-                > 
-
-                  <p> List of posts from Adresses you follow </p>
-
-                </div>
 
             </div>
 

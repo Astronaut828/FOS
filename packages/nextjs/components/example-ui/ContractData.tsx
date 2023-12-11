@@ -20,26 +20,41 @@ export const ContractData = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const greetingRef = useRef<HTMLDivElement>(null);
 
-  const { data: totalCounter } = useScaffoldContractRead({
-    contractName: "YourContract",
-    functionName: "totalCounter",
-  });
+  const [userCIDs, setUserCIDs] = useState<string[]>([]);
 
-  const { data: currentGreeting, isLoading: isGreetingLoading } = useScaffoldContractRead({
-    contractName: "YourContract",
-    functionName: "greeting",
-  });
+  const { data: yourContract } = useScaffoldContract({ contractName: "YourContract" });
+
 
   useScaffoldEventSubscriber({
     contractName: "YourContract",
-    eventName: "GreetingChange",
+    eventName: "CidMapped",
     listener: logs => {
       logs.map(log => {
-        const { greetingSetter, value, premium, newGreeting } = log.args;
-        console.log("📡 GreetingChange event", greetingSetter, value, premium, newGreeting);
+        const { user, index, cid } = log.args;
+        console.log("📡 CidMapped event", user, index, cid);
       });
     },
   });
+
+  // Hook to read the count of CIDs for a user
+  const { data: cidCount } = useScaffoldContractRead({
+    contractName: "YourContract",
+    functionName: "getUserCIDsCount",
+    args: [address],
+  });
+
+  const { data: cidsData } = useScaffoldContractRead({
+    contractName: "YourContract",
+    functionName: "getUserCIDs",
+    args: [address, cidCount],
+  });
+
+  useEffect(() => {
+    if (cidsData) {
+      // Create a new array from the readonly array to make it mutable
+      setUserCIDs([...cidsData]);
+    }
+  }, [cidsData]);
 
   const {
     data: myGreetingChangeEvents,
@@ -47,7 +62,7 @@ export const ContractData = () => {
     error: errorReadingEvents,
   } = useScaffoldEventHistory({
     contractName: "YourContract",
-    eventName: "GreetingChange",
+    eventName: "CidMapped",
     fromBlock: process.env.NEXT_PUBLIC_DEPLOY_BLOCK ? BigInt(process.env.NEXT_PUBLIC_DEPLOY_BLOCK) : 0n,
     filters: { greetingSetter: address },
     blockData: true,
@@ -55,12 +70,11 @@ export const ContractData = () => {
 
   console.log("Events:", isLoadingEvents, errorReadingEvents, myGreetingChangeEvents);
 
-  const { data: yourContract } = useScaffoldContract({ contractName: "YourContract" });
   console.log("yourContract: ", yourContract);
 
-  const { showAnimation } = useAnimationConfig(totalCounter);
+  // const { showAnimation } = useAnimationConfig(totalCounter);
 
-  const showTransition = transitionEnabled && !!currentGreeting && !isGreetingLoading;
+  // const showTransition = transitionEnabled && !!currentGreeting && !isGreetingLoading;
 
   useEffect(() => {
     if (transitionEnabled && containerRef.current && greetingRef.current) {
@@ -74,10 +88,7 @@ export const ContractData = () => {
 <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">
 
       <div
-        className={`flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full 
-        ${
-          showAnimation ? "animate-zoom" : ""
-        }`}
+        className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full"
         style={{ maxWidth: "95%" }}
       >
 
@@ -103,9 +114,9 @@ export const ContractData = () => {
           {/* Post count */}
           <div className="border border-primary rounded-xl flex">
             <div className="p-2 py-1 border-r border-primary flex items-end">Post count</div>
-            <div className="text-4xl text-right min-w-[3rem] px-2 py-1 flex justify-end font-bai-jamjuree">
+            {/* <div className="text-4xl text-right min-w-[3rem] px-2 py-1 flex justify-end font-bai-jamjuree">
               {totalCounter?.toString() || "0"}
-            </div>
+            </div> */}
           </div>
 
 
@@ -113,29 +124,18 @@ export const ContractData = () => {
 
 
         {/* Marquee Text */}
-        <div className="mt-3 border border-primary bg-neutral bg-opacity-70 rounded-3xl text-secondary  overflow-hidden text-[116px] whitespace-nowrap w-full uppercase tracking-tighter font-bai-jamjuree leading-tight"
-        style={{ maxWidth: "95%" }}
-        >
-          <div className="relative overflow-x-hidden" ref={containerRef}>
-            {/* for speed calculating purposes */}
-            <div className="absolute -left-[9999rem]" ref={greetingRef}>
-              <div className="px-4">{currentGreeting}</div>
-            </div>
-            {new Array(3).fill("").map((_, i) => {
-              const isLineRightDirection = i % 2 ? isRightDirection : !isRightDirection;
-              return (
-                <Marquee
-                  key={i}
-                  direction={isLineRightDirection ? "right" : "left"}
-                  gradient={false}
-                  play={showTransition}
-                  speed={marqueeSpeed}
-                  className={i % 2 ? "-my-10" : ""}
-                >
-                  <div className="px-4">{currentGreeting || " "}</div>
+        <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">
+          <div className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full" style={{ maxWidth: "95%" }}>
+            {/* ... other UI elements ... */}
+            {/* Marquee Text */}
+            <div className="mt-3 border border-primary bg-neutral bg-opacity-70 rounded-3xl text-secondary overflow-hidden text-[116px] whitespace-nowrap w-full uppercase tracking-tighter font-bai-jamjuree leading-tight">
+              {userCIDs.map((cid, index) => (
+                <Marquee key={index} /* ... other Marquee props */>
+                  {cid}
                 </Marquee>
-              );
-            })}
+              ))}
+            </div>
+            {/* ... other UI elements ... */}
           </div>
         </div>
 

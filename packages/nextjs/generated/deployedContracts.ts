@@ -5,7 +5,7 @@ const contracts = {
       name: "localhost",
       contracts: {
         YourContract: {
-          address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+          address: "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
           abi: [
             {
               inputs: [
@@ -50,8 +50,32 @@ const contracts = {
                   name: "user",
                   type: "address",
                 },
+                {
+                  internalType: "uint256",
+                  name: "count",
+                  type: "uint256",
+                },
               ],
-              name: "getNextCIDIndex",
+              name: "getUserCIDs",
+              outputs: [
+                {
+                  internalType: "string[]",
+                  name: "",
+                  type: "string[]",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "address",
+                  name: "user",
+                  type: "address",
+                },
+              ],
+              name: "getUserCIDsCount",
               outputs: [
                 {
                   internalType: "uint256",

@@ -42,9 +42,17 @@ contract YourContract {
         emit CidMapped(msg.sender, index, _cid);
     }
 
-    function getNextCIDIndex(address user) public view returns (uint256) {
-        return nextCIDIndex[user];
-    }
+	function getUserCIDs(address user, uint256 count) public view returns (string[] memory) {
+		string[] memory cids = new string[](count);
+		for (uint256 i = 0; i < count; i++) {
+			cids[i] = userCIDs[user][i];
+		}
+		return cids;
+	}
+
+	function getUserCIDsCount(address user) public view returns (uint256) {
+		return nextCIDIndex[user];
+	}
 
 
 	/**

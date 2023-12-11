@@ -2,21 +2,57 @@ import { useState } from "react";
 import { parseEther } from "viem";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+const nftStorageApiKey = process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY;
 
 export const ContractInteraction = () => {
   const [visible, setVisible] = useState(true);
-  const [newGreeting, setNewGreeting] = useState("");
+  const [newText, saveNewText] = useState("");
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "YourContract",
     functionName: "setGreeting",
-    args: [newGreeting],
-    value: parseEther("0.01"),
+    args: [newText],
     onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
-      setNewGreeting(""); // Reset the newGreeting state to clear the textarea
+      saveNewText("");
     },
   });
+
+  const saveAsJsonFileAndSendToNFTStorage = async () => {
+    const jsonData = { text: newText };
+    const jsonContent = JSON.stringify(jsonData, null, 2);
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', new Blob([jsonContent], { type: "application/json" }));
+  
+      const response = await fetch('https://api.nft.storage/upload', {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${nftStorageApiKey}`
+        },
+        body: formData,
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        const cid = data.value.cid; // Extracting CID from the response
+        console.log(`Uploaded to NFT.Storage - CID: ${cid}`);
+  
+        // Use the CID as needed in your application
+      } else {
+        console.error("Failed to upload to NFT.Storage");
+        console.log("Status:", response.status);
+      }
+    } catch (error) {
+      console.error("An error occurred while uploading to NFT.Storage", error);
+    }
+  
+    // After sending the data, you can proceed to send it to the contract
+    writeAsync();
+  };
+  
+
 
 
   return (
@@ -35,7 +71,7 @@ export const ContractInteraction = () => {
 
           <textarea
             placeholder="WHATS ON YOUR MIND?"
-            value={newGreeting}
+            value={newText}
             style={{ 
               maxWidth: "95%", 
               maxHeight: "95%", 
@@ -44,7 +80,7 @@ export const ContractInteraction = () => {
               padding: "12px",
             }} 
             className="input font-bai-jamjuree w-full border border-primary rounded-3xl text-lg sm:text-xl placeholder-grey"
-            onChange={e => setNewGreeting(e.target.value)}
+            onChange={e => saveNewText(e.target.value)}
           />
 
           <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
@@ -56,7 +92,7 @@ export const ContractInteraction = () => {
 
                 <button
                   className="btn btn-primary rounded-full capitalize font-normal font-white w-30 flex items-center gap-1 hover:gap-2 transition-all tracking-widest"
-                  onClick={() => writeAsync()}
+                  onClick={saveAsJsonFileAndSendToNFTStorage}
                   disabled={isLoading}
                 >
                   {isLoading ? (

@@ -8,20 +8,26 @@ export const ContractInteraction = () => {
   const [visible, setVisible] = useState(true);
   const [newText, saveNewText] = useState("");
 
-  const { writeAsync, isLoading } = useScaffoldContractWrite({
+
+  const { writeAsync: writeCIDAsync, isLoading } = useScaffoldContractWrite({
     contractName: "YourContract",
-    functionName: "setGreeting",
-    args: [newText],
+    functionName: "setUserCID",
+    args: [undefined], // Provide an array with a single undefined element
     onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
       saveNewText("");
+      console.log("CID set in contract:", txnReceipt.blockHash);
     },
   });
 
   const saveAsJsonFileAndSendToNFTStorage = async () => {
-    const jsonData = { text: newText };
+    const timestamp = new Date().toISOString();
+    const jsonData = {
+      text: newText,
+      timestamp: timestamp
+    };
     const jsonContent = JSON.stringify(jsonData, null, 2);
-    
+  
     try {
       const formData = new FormData();
       formData.append('file', new Blob([jsonContent], { type: "application/json" }));
@@ -36,39 +42,33 @@ export const ContractInteraction = () => {
   
       if (response.ok) {
         const data = await response.json();
-        const cid = data.value.cid; // Extracting CID from the response
+        const cid = data.value.cid;
         console.log(`Uploaded to NFT.Storage - CID: ${cid}`);
   
-        // Use the CID as needed in your application
+        // Call writeCIDAsync with the CID when it's available
+        try {
+          const txnReceipt = await writeCIDAsync({ args: [cid] });
+        } catch (writeError) {
+          console.error("Failed to write CID to the contract:", writeError);
+        }
       } else {
         console.error("Failed to upload to NFT.Storage");
         console.log("Status:", response.status);
+        console.log("Response:", await response.text());
       }
-    } catch (error) {
-      console.error("An error occurred while uploading to NFT.Storage", error);
+    } catch (uploadError) {
+      console.error("An error occurred while uploading to NFT.Storage", uploadError);
     }
-  
-    // After sending the data, you can proceed to send it to the contract
-    writeAsync();
   };
   
-
-
-
+  
   return (
     <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">
-
-
-
-
-
           <div 
             className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full"
             style={{ maxWidth: "95%" }}
           > 
-
           <span className="text-4xl sm:text-6xl text-base-300 mb-5">articulate your opinions and ideas</span>
-
           <textarea
             placeholder="WHATS ON YOUR MIND?"
             value={newText}
@@ -82,14 +82,8 @@ export const ContractInteraction = () => {
             className="input font-bai-jamjuree w-full border border-primary rounded-3xl text-lg sm:text-xl placeholder-grey"
             onChange={e => saveNewText(e.target.value)}
           />
-
           <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
-
-
             <div className="flex rounded-full border border-primary p-1 flex-shrink-0">
-
-
-
                 <button
                   className="btn btn-primary rounded-full capitalize font-normal font-white w-30 flex items-center gap-1 hover:gap-2 transition-all tracking-widest"
                   onClick={saveAsJsonFileAndSendToNFTStorage}
@@ -103,13 +97,9 @@ export const ContractInteraction = () => {
                     </>
                   )}
                 </button>
-
-
             </div>
           </div>
-          
         </div>
-
     </div>
   );
 };

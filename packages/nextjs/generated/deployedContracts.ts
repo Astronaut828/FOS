@@ -5,7 +5,7 @@ const contracts = {
       name: "localhost",
       contracts: {
         YourContract: {
-          address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+          address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
           abi: [
             {
               inputs: [
@@ -24,39 +24,39 @@ const contracts = {
                 {
                   indexed: true,
                   internalType: "address",
-                  name: "greetingSetter",
+                  name: "user",
                   type: "address",
                 },
                 {
                   indexed: false,
-                  internalType: "string",
-                  name: "newGreeting",
-                  type: "string",
-                },
-                {
-                  indexed: false,
-                  internalType: "bool",
-                  name: "premium",
-                  type: "bool",
-                },
-                {
-                  indexed: false,
                   internalType: "uint256",
-                  name: "value",
+                  name: "index",
                   type: "uint256",
                 },
+                {
+                  indexed: false,
+                  internalType: "string",
+                  name: "cid",
+                  type: "string",
+                },
               ],
-              name: "GreetingChange",
+              name: "CidMapped",
               type: "event",
             },
             {
-              inputs: [],
-              name: "greeting",
+              inputs: [
+                {
+                  internalType: "address",
+                  name: "user",
+                  type: "address",
+                },
+              ],
+              name: "getNextCIDIndex",
               outputs: [
                 {
-                  internalType: "string",
+                  internalType: "uint256",
                   name: "",
-                  type: "string",
+                  type: "uint256",
                 },
               ],
               stateMutability: "view",
@@ -76,42 +76,16 @@ const contracts = {
               type: "function",
             },
             {
-              inputs: [],
-              name: "premium",
-              outputs: [
-                {
-                  internalType: "bool",
-                  name: "",
-                  type: "bool",
-                },
-              ],
-              stateMutability: "view",
-              type: "function",
-            },
-            {
               inputs: [
                 {
                   internalType: "string",
-                  name: "_newGreeting",
+                  name: "_cid",
                   type: "string",
                 },
               ],
-              name: "setGreeting",
+              name: "setUserCID",
               outputs: [],
-              stateMutability: "payable",
-              type: "function",
-            },
-            {
-              inputs: [],
-              name: "totalCounter",
-              outputs: [
-                {
-                  internalType: "uint256",
-                  name: "",
-                  type: "uint256",
-                },
-              ],
-              stateMutability: "view",
+              stateMutability: "nonpayable",
               type: "function",
             },
             {
@@ -121,13 +95,18 @@ const contracts = {
                   name: "",
                   type: "address",
                 },
-              ],
-              name: "userGreetingCounter",
-              outputs: [
                 {
                   internalType: "uint256",
                   name: "",
                   type: "uint256",
+                },
+              ],
+              name: "userCIDs",
+              outputs: [
+                {
+                  internalType: "string",
+                  name: "",
+                  type: "string",
                 },
               ],
               stateMutability: "view",

@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import Marquee from "react-fast-marquee";
+import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
+import { create } from 'zustand'
 import {
   useAnimationConfig,
   useScaffoldContract,
@@ -9,16 +9,10 @@ import {
   useScaffoldEventSubscriber,
 } from "~~/hooks/scaffold-eth";
 
-const MARQUEE_PERIOD_IN_SEC = 5;
 
 export const ContractData = () => {
   const { address } = useAccount();
   const [transitionEnabled, setTransitionEnabled] = useState(true);
-  const [isRightDirection, setIsRightDirection] = useState(false);
-  const [marqueeSpeed, setMarqueeSpeed] = useState(0);
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  const greetingRef = useRef<HTMLDivElement>(null);
 
   const [userCIDs, setUserCIDs] = useState<string[]>([]);
 
@@ -28,10 +22,12 @@ export const ContractData = () => {
   useScaffoldEventSubscriber({
     contractName: "YourContract",
     eventName: "CidMapped",
-    listener: logs => {
-      logs.map(log => {
+    listener: (logs) => {
+      // Update state or perform actions based on the event data
+      logs.forEach((log) => {
         const { user, index, cid } = log.args;
         console.log("📡 CidMapped event", user, index, cid);
+        // Optionally, trigger a state update or a fetch to refresh data
       });
     },
   });
@@ -56,33 +52,26 @@ export const ContractData = () => {
     }
   }, [cidsData]);
 
+
+  // Use `myCidMappedEvents` to display a history of CID mappings for the user
   const {
-    data: myGreetingChangeEvents,
-    isLoading: isLoadingEvents,
-    error: errorReadingEvents,
+    data: myCidMappedEvents,
+    isLoading: isLoadingCidMappedEvents,
+    error: errorReadingCidMappedEvents,
   } = useScaffoldEventHistory({
     contractName: "YourContract",
     eventName: "CidMapped",
     fromBlock: process.env.NEXT_PUBLIC_DEPLOY_BLOCK ? BigInt(process.env.NEXT_PUBLIC_DEPLOY_BLOCK) : 0n,
-    filters: { greetingSetter: address },
+    filters: { user: address }, // Filter events for the current user
     blockData: true,
   });
+  
+  
 
-  console.log("Events:", isLoadingEvents, errorReadingEvents, myGreetingChangeEvents);
+  // console.log("Events:", isLoadingEvents, errorReadingEvents, myGreetingChangeEvents);
 
   console.log("yourContract: ", yourContract);
-
-  // const { showAnimation } = useAnimationConfig(totalCounter);
-
-  // const showTransition = transitionEnabled && !!currentGreeting && !isGreetingLoading;
-
-  useEffect(() => {
-    if (transitionEnabled && containerRef.current && greetingRef.current) {
-      setMarqueeSpeed(
-        Math.max(greetingRef.current.clientWidth, containerRef.current.clientWidth) / MARQUEE_PERIOD_IN_SEC,
-      );
-    }
-  }, [transitionEnabled, containerRef, greetingRef]);
+  const { showAnimation } = useAnimationConfig(cidCount);
 
   return (
 <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">
@@ -95,7 +84,7 @@ export const ContractData = () => {
 
         <div className="flex justify-between w-full px-20">
 
-          {/* Switch Button => turn NEXT POST (Last posts) (Pagination) */}
+          {/* Switch Button => turn to NEXT POST (Last posts) (Pagination) */}
           <button
             className="btn btn-circle btn-ghost relative bg-center bg-[url('/assets/switch-button-on.png')] bg-no-repeat"
             onClick={() => {
@@ -114,48 +103,33 @@ export const ContractData = () => {
           {/* Post count */}
           <div className="border border-primary rounded-xl flex">
             <div className="p-2 py-1 border-r border-primary flex items-end">Post count</div>
-            {/* <div className="text-4xl text-right min-w-[3rem] px-2 py-1 flex justify-end font-bai-jamjuree">
-              {totalCounter?.toString() || "0"}
-            </div> */}
+            <div className={`text-4xl text-right min-w-[3rem] px-2 py-1 flex justify-end font-bai-jamjuree ${showAnimation ? "animate-zoom" : ""}`}>
+              {cidCount?.toString() || "0"} {/* Display the CID count here */}
+            </div>
           </div>
 
 
         </div>
 
 
-        {/* Marquee Text */}
+        {/* CID list */}
         <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">
           <div className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full" style={{ maxWidth: "95%" }}>
-            {/* ... other UI elements ... */}
-            {/* Marquee Text */}
-            <div className="mt-3 border border-primary bg-neutral bg-opacity-70 rounded-3xl text-secondary overflow-hidden text-[116px] whitespace-nowrap w-full uppercase tracking-tighter font-bai-jamjuree leading-tight">
+          
+          <h3 className="text-lg font-bold mb-2">User CIDs:</h3>
+            <ul className="list-disc list-inside">
               {userCIDs.map((cid, index) => (
-                <Marquee key={index} /* ... other Marquee props */>
-                  {cid}
-                </Marquee>
+                <li key={index}>{cid}</li>
               ))}
-            </div>
+            </ul>
             {/* ... other UI elements ... */}
           </div>
         </div>
 
-        {/* Marquee direction button + Loading Bar
+
+        {/*  Loading Bar
 
          <div className="mt-3 flex bg-yellow-500 items-end justify-between">
-
-          <button
-            className={`btn btn-circle btn-ghost border border-primary hover:border-primary w-12 h-12 p-1 bg-neutral flex items-center ${
-              isRightDirection ? "justify-start" : "justify-end"
-            }`}
-            onClick={() => {
-              if (transitionEnabled) {
-                setIsRightDirection(!isRightDirection);
-              }
-            }}
-          >
-            <div className="border border-primary rounded-full bg-secondary w-2 h-2" />
-          </button>
-
 
           <div className="w-44 p-0.5 flex items-center bg-neutral border border-primary rounded-full">
             <div
@@ -163,7 +137,6 @@ export const ContractData = () => {
               style={{ animationPlayState: showTransition ? "running" : "paused" }}
             />
           </div>
-
 
         </div>
 

@@ -7,10 +7,17 @@ const nftStorageApiKey = process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY;
 
 export const ContractInteraction = () => {
   const [visible, setVisible] = useState(true);
+
   const [newText, saveNewText] = useState("");
+  const maxChars = 1500;
 
   const { address } = useAccount();
 
+  const handleTextChange = (e) => {
+    if (e.target.value.length <= maxChars) {
+      saveNewText(e.target.value);
+    }
+  };
 
   const { writeAsync: writeCIDAsync, isLoading } = useScaffoldContractWrite({
     contractName: "YourContract",
@@ -72,40 +79,44 @@ export const ContractInteraction = () => {
   
   return (
     <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">
-          <div 
-            className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full"
-            style={{ maxWidth: "95%" }}
-          > 
-          <span className="text-4xl sm:text-6xl text-base-300 mb-5">articulate your opinions and ideas</span>
-          <textarea
-            placeholder="WHATS ON YOUR MIND?"
-            value={newText}
-            style={{ 
-              maxWidth: "95%", 
-              maxHeight: "95%", 
-              height: "40vh",
-              resize: "none",
-              padding: "12px",
-            }} 
-            className="input font-bai-jamjuree w-full border border-primary rounded-3xl text-lg sm:text-xl placeholder-grey"
-            onChange={e => saveNewText(e.target.value)}
-          />
-          <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
-            <div className="flex rounded-full border border-primary p-1 flex-shrink-0">
-              <button
-                className="btn btn-primary rounded-full capitalize font-normal font-white w-30 flex items-center gap-1 hover:gap-2 transition-all tracking-widest"
-                onClick={saveAsJsonFileAndSendToNFTStorage}
-                disabled={isLoading || !address} // Disable the button if loading or no user is logged in
-              >
-                {isLoading ? (
-                  <span className="loading loading-spinner loading-sm"></span>
-                ) : (
-                  address ? "Commit Your Msg" : "Connect Wallet"
-                )}
-              </button>
-            </div>
+      <div 
+        className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full"
+        style={{ maxWidth: "95%" }}
+      > 
+        <span className="text-4xl sm:text-6xl text-base-300 mb-5">articulate your opinions and ideas</span>
+        <textarea
+          placeholder="WHAT'S ON YOUR MIND?"
+          value={newText}
+          maxLength={maxChars}
+          style={{ 
+            maxWidth: "95%", 
+            maxHeight: "95%", 
+            height: "40vh",
+            resize: "none",
+            padding: "12px",
+          }} 
+          className="input font-bai-jamjuree w-full border border-primary rounded-3xl text-lg sm:text-xl placeholder-grey"
+          onChange={handleTextChange}
+        />
+        <div className="mt-3">
+          {maxChars - newText.length} characters remaining
+        </div>
+        <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
+          <div className="flex rounded-full border border-primary p-1 flex-shrink-0">
+            <button
+              className="btn btn-primary rounded-full capitalize font-normal font-white w-30 flex items-center gap-1 hover:gap-2 transition-all tracking-widest"
+              onClick={saveAsJsonFileAndSendToNFTStorage}
+              disabled={isLoading || !address} // Disable the button if loading or no user is logged in
+            >
+              {isLoading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : (
+                address ? "Commit Your Msg" : "Connect Wallet"
+              )}
+            </button>
           </div>
         </div>
+      </div>
     </div>
   );
 };

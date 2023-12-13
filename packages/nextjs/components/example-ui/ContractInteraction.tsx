@@ -2,11 +2,14 @@ import { useState } from "react";
 import { parseEther } from "viem";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { useAccount } from "wagmi";
 const nftStorageApiKey = process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY;
 
 export const ContractInteraction = () => {
   const [visible, setVisible] = useState(true);
   const [newText, saveNewText] = useState("");
+
+  const { address } = useAccount();
 
 
   const { writeAsync: writeCIDAsync, isLoading } = useScaffoldContractWrite({
@@ -21,6 +24,11 @@ export const ContractInteraction = () => {
   });
 
   const saveAsJsonFileAndSendToNFTStorage = async () => {
+    if (!newText.trim()) {
+      console.log("No text provided");
+      return;
+    }
+
     const timestamp = new Date().toISOString();
     const jsonData = {
       text: newText,
@@ -84,19 +92,17 @@ export const ContractInteraction = () => {
           />
           <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
             <div className="flex rounded-full border border-primary p-1 flex-shrink-0">
-                <button
-                  className="btn btn-primary rounded-full capitalize font-normal font-white w-30 flex items-center gap-1 hover:gap-2 transition-all tracking-widest"
-                  onClick={saveAsJsonFileAndSendToNFTStorage}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <span className="loading loading-spinner loading-sm"></span>
-                  ) : (
-                    <>
-                      Commit Your Msg
-                    </>
-                  )}
-                </button>
+              <button
+                className="btn btn-primary rounded-full capitalize font-normal font-white w-30 flex items-center gap-1 hover:gap-2 transition-all tracking-widest"
+                onClick={saveAsJsonFileAndSendToNFTStorage}
+                disabled={isLoading || !address} // Disable the button if loading or no user is logged in
+              >
+                {isLoading ? (
+                  <span className="loading loading-spinner loading-sm"></span>
+                ) : (
+                  address ? "Commit Your Msg" : "Connect Wallet"
+                )}
+              </button>
             </div>
           </div>
         </div>

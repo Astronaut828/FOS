@@ -118,9 +118,13 @@ export const ContractData = () => {
           
           <h3 className="text-lg font-bold mb-2">User CIDs:</h3>
             <ul className="list-disc list-inside">
-              {userCIDs.map((cid, index) => (
-                <li key={index}>{cid}</li>
-              ))}
+                {address && userCIDs.length > 0 ? (
+                userCIDs.map((cid, index) => (
+                  <li key={index}>{cid}</li>
+                ))
+              ) : (
+                <li>{address ? 'No CIDs found.' : 'Not logged in.'}</li>
+              )}
             </ul>
             {/* ... other UI elements ... */}
           </div>

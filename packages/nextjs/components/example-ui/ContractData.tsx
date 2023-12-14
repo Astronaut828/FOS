@@ -138,7 +138,7 @@ export const ContractData = () => {
 
 return (
     <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">
-      <div className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full" style={{ maxWidth: "95%" }}>
+      <div className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-10 py-5 w-full" style={{ maxWidth: "95%" }}>
 
         {/* Pagination Buttons and Post Count */}
         <div className="flex justify-between w-full px-20 items-center">

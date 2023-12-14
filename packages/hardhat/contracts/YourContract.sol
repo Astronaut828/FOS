@@ -19,7 +19,6 @@ contract YourContract {
 
     event CidMapped(address indexed user, uint256 index, string cid);
 
-
 	// Constructor: Called once on contract deployment
 	// Check packages/hardhat/deploy/00_deploy_your_contract.ts
 	constructor(address _owner) {
@@ -33,7 +32,6 @@ contract YourContract {
 		require(msg.sender == owner, "Not the Owner");
 		_;
 	}
-
 
     function setUserCID(string memory _cid) public {
         uint256 index = nextCIDIndex[msg.sender];
@@ -53,7 +51,6 @@ contract YourContract {
 	function getUserCIDsCount(address user) public view returns (uint256) {
 		return nextCIDIndex[user];
 	}
-
 
 	/**
 	 * Function that allows the owner to withdraw all the Ether in the contract

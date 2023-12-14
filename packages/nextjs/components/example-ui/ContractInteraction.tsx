@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { parseEther } from "viem";
+import { useAccount } from "wagmi";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import { useAccount } from "wagmi";
+
 const nftStorageApiKey = process.env.NEXT_PUBLIC_NFT_STORAGE_API_KEY;
 
 export const ContractInteraction = () => {
@@ -24,7 +25,7 @@ export const ContractInteraction = () => {
     contractName: "YourContract",
     functionName: "setUserCID",
     args: [undefined], // Provide an array with a single undefined element
-    onBlockConfirmation: (txnReceipt) => {
+    onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
       saveNewText("");
       console.log("CID set in contract:", txnReceipt.blockHash);
@@ -93,32 +94,42 @@ export const ContractInteraction = () => {
     );
   };
 
-  
-  
   return (
     <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">
-      <div 
+      <div
         className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full"
         style={{ maxWidth: "95%" }}
-      > 
-        <span className="text-4xl sm:text-6xl text-base-300 mb-5">articulate your opinions and ideas</span>
+      >
+
+        {/* <div className={`mt-10 flex gap-2 ${visible ? "" : "invisible"} max-w-2xl`}>
+        <div className="flex gap-5 bg-base-200 bg-opacity-80 z-0 p-7 rounded-2xl shadow-lg">
+        <span className="text-3xl">👋🏻 TEXT-WARNING</span>
+        <span className="text-3xl">IPFS Info and understanding of immutability</span>
+        </div>
+        <button
+        className="btn btn-circle btn-ghost h-6 w-6 bg-base-200 bg-opacity-80 z-0 min-h-0 drop-shadow-md"
+        onClick={() => setVisible(false)}
+        >
+        <XMarkIcon className="h-4 w-4" />
+        </button>
+        </div>  */}
+
+        <span className="text-3xl sm:text-5xl text-base-300 mb-5">articulate your opinions and ideas</span>
         <textarea
           placeholder="WHAT'S ON YOUR MIND?"
           value={newText}
           maxLength={maxChars}
-          style={{ 
-            maxWidth: "95%", 
-            maxHeight: "95%", 
+          style={{
+            maxWidth: "95%",
+            maxHeight: "95%",
             height: "40vh",
             resize: "none",
             padding: "12px",
-          }} 
+          }}
           className="input font-bai-jamjuree w-full border border-primary rounded-3xl text-lg sm:text-xl placeholder-grey"
           onChange={handleTextChange}
         />
-        <div className="mt-3">
-          {maxChars - newText.length} characters remaining
-        </div>
+        <div className="mt-3">{maxChars - newText.length} characters remaining</div>
         <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
           <div className="flex rounded-full border border-primary p-1 flex-shrink-0">
             <button
@@ -129,9 +140,11 @@ export const ContractInteraction = () => {
               {isLoading ? (
                 // Display the Loading Bar when isLoading is true
                 <LoadingBar />
+              ) : // Display text based on address state
+              address ? (
+                "Commit Your Msg"
               ) : (
-                // Display text based on address state
-                address ? "Commit Your Msg" : "Connect Wallet"
+                "Connect Wallet"
               )}
             </button>
           </div>
@@ -140,22 +153,3 @@ export const ContractInteraction = () => {
     </div>
   );
 };
-
-
-
-{/* Text bubble with close button
-
-<div className={`mt-10 flex gap-2 ${visible ? "" : "invisible"} max-w-2xl`}>
-<div className="flex gap-5 bg-base-200 bg-opacity-80 z-0 p-7 rounded-2xl shadow-lg">
-<span className="text-3xl">👋🏻</span>
-<span className="text-3xl">Hello</span>
-</div>
-<button
-className="btn btn-circle btn-ghost h-6 w-6 bg-base-200 bg-opacity-80 z-0 min-h-0 drop-shadow-md"
-onClick={() => setVisible(false)}
->
-<XMarkIcon className="h-4 w-4" />
-</button>
-</div> 
-
-*/}

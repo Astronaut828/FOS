@@ -101,7 +101,8 @@ export const ContractInteraction = () => {
         style={{ maxWidth: "95%" }}
       >
 
-        {/* <div className={`mt-10 flex gap-2 ${visible ? "" : "invisible"} max-w-2xl`}>
+        {/* Warning Message 
+        <div className={`mt-10 flex gap-2 ${visible ? "" : "invisible"} max-w-2xl`}>
         <div className="flex gap-5 bg-base-200 bg-opacity-80 z-0 p-7 rounded-2xl shadow-lg">
         <span className="text-3xl">👋🏻 TEXT-WARNING</span>
         <span className="text-3xl">IPFS Info and understanding of immutability</span>
@@ -112,7 +113,8 @@ export const ContractInteraction = () => {
         >
         <XMarkIcon className="h-4 w-4" />
         </button>
-        </div>  */}
+        </div>  
+        */}
 
         <span className="text-3xl sm:text-5xl text-base-300 mb-5">articulate your opinions and ideas</span>
         <textarea

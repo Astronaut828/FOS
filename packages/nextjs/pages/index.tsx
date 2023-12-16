@@ -20,7 +20,7 @@ const Home: NextPage = () => {
   const { data: yourContract } = useScaffoldContract({ contractName: "YourContract" });
   const { address } = useAccount();
 
-  // Searchbar functionality / Mapping search to address
+  // Searchbar functionality
   const [searchAddress, setSearchAddress] = useState('');
   const [addressFound, setAddressFound] = useState(false);
 
@@ -31,31 +31,23 @@ const Home: NextPage = () => {
     args: [searchAddress],
   });
 
-  // Function to check if the address has any CIDs
-  const checkAddress = async () => {
-    await refetchCidCount();
-    if (cidCountData !== undefined) {
-      setAddressFound(cidCountData > 0);
-    }
-  };
-
-  useEffect(() => {
-    if (cidCountData !== undefined) {
-      setAddressFound(cidCountData > 0);
-    }
-  }, [cidCountData]);
-
   // Hook to add a new follow record to the contract
   const { writeAsync: followAddressAsync } = useScaffoldContractWrite({
     contractName: "YourContract",
     functionName: "followAddress",
     args: [undefined],
   });
+
+  useEffect(() => {
+    if (cidCountData !== undefined) {
+      setAddressFound(cidCountData > 0);
+    }
+  }, [cidCountData]);
   
   const handleFollow = async (addressToFollow: string) => {
     try {
       await followAddressAsync({ args: [addressToFollow] });
-      setSearchAddress(''); // Reset the input field
+      setSearchAddress(''); 
     } catch (error) {
       console.error("Error following address:", error);
     }

@@ -16,7 +16,7 @@ contract YourContract {
     address public immutable owner;
     mapping(address => mapping(uint256 => string)) public userCIDs; 
     mapping(address => uint256) private nextCIDIndex;
-	mapping(address => address[]) public userFollows;
+	mapping(address => mapping(address => bool)) public userFollows;
 
     event CidMapped(address indexed user, uint256 index, string cid);
 
@@ -53,6 +53,18 @@ contract YourContract {
 		return nextCIDIndex[user];
 	}
 
+	// Function that allows a user to follow another user
+	function followAddress(address _toFollow) public {
+		require(_toFollow != address(0), "Invalid address");
+		require(!userFollows[msg.sender][_toFollow], "Already following");
+
+		userFollows[msg.sender][_toFollow] = true;
+	}
+
+	// Function that returns the addresses that a user follows
+ 	function isFollowing(address _user, address _following) public view returns (bool) {
+        return userFollows[_user][_following];
+    }
 
 
 	/**

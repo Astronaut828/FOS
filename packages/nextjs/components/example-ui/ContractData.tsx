@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { create } from "zustand";
+import { create } from 'zustand';
 import {
   useAnimationConfig,
   useScaffoldContract,

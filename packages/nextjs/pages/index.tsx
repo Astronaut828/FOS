@@ -18,6 +18,7 @@ const Home: NextPage = () => {
 
   // Importing the contract ABI 
   const { data: yourContract } = useScaffoldContract({ contractName: "YourContract" });
+  const { address } = useAccount();
 
   // Searchbar functionality / Mapping search to address
   const [searchAddress, setSearchAddress] = useState('');
@@ -44,6 +45,22 @@ const Home: NextPage = () => {
     }
   }, [cidCountData]);
 
+  // Hook to add a new follow record to the contract
+  const { writeAsync: followAddressAsync } = useScaffoldContractWrite({
+    contractName: "YourContract",
+    functionName: "followAddress",
+    args: [undefined],
+  });
+  
+  const handleFollow = async (addressToFollow: string) => {
+    try {
+      await followAddressAsync({ args: [addressToFollow] });
+      setSearchAddress(''); // Reset the input field
+    } catch (error) {
+      console.error("Error following address:", error);
+    }
+  };
+
   return (
     <>
       <MetaHeader />
@@ -69,7 +86,9 @@ const Home: NextPage = () => {
         {/* Conditional rendering based on searchAddress and addressFound */}
         {searchAddress && (
             addressFound ? (
-              <button className="btn btn-primary rounded-2xl capitalize font-normal text-white text-lg w-24 flex items-center gap-1 hover:gap-2 transition-all"
+              <button 
+              className="btn btn-primary rounded-2xl capitalize font-normal text-white text-lg w-24 flex items-center gap-1 hover:gap-2 transition-all"
+              onClick={() => handleFollow(searchAddress)}
               >
                 Follow
               </button>
@@ -109,16 +128,6 @@ const Home: NextPage = () => {
                   </p>
 
                 </div>
-
-                <div 
-                  className="bg-base-300 text-left text-lg rounded-3xl w-full px-10 py-5 my-3"
-                  style={{ maxWidth: "99%" }}
-                > 
-
-                  <p> List of posts from Adresses you follow </p>
-
-                </div>
-
 
             </div>
 

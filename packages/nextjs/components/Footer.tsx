@@ -25,7 +25,7 @@ export const Footer = () => {
           <div className="flex justify-center items-center gap-2 text-sm w-full">
             <div className="flex justify-center items-center gap-2">
               <p className="m-0 text-center">
-                Built with <HeartIcon className="inline-block h-4 w-4" /> from Quizford.eth at
+                Built with <HeartIcon className="inline-block h-4 w-4" /> by Quizford.eth at
               </p>
                 <BuidlGuidlLogo className="w-3 h-5 pb-1" />
                 <span>BuidlGuidl</span>

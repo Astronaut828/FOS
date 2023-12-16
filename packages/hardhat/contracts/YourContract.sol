@@ -16,6 +16,7 @@ contract YourContract {
     address public immutable owner;
     mapping(address => mapping(uint256 => string)) public userCIDs; 
     mapping(address => uint256) private nextCIDIndex;
+	mapping(address => address[]) public userFollows;
 
     event CidMapped(address indexed user, uint256 index, string cid);
 
@@ -51,6 +52,8 @@ contract YourContract {
 	function getUserCIDsCount(address user) public view returns (uint256) {
 		return nextCIDIndex[user];
 	}
+
+
 
 	/**
 	 * Function that allows the owner to withdraw all the Ether in the contract

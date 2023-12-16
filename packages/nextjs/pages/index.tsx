@@ -1,8 +1,49 @@
 import Link from "next/link";
 import type { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
+import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
+import { create } from "zustand";
+import {
+  useAnimationConfig,
+  useScaffoldContract,
+  useScaffoldContractRead,
+  useScaffoldEventHistory,
+  useScaffoldEventSubscriber,
+  useScaffoldContractWrite
+} from "~~/hooks/scaffold-eth";
+
 
 const Home: NextPage = () => {
+
+  // Importing the contract ABI 
+  const { data: yourContract } = useScaffoldContract({ contractName: "YourContract" });
+
+  // Searchbar functionality / Mapping search to address
+  const [searchAddress, setSearchAddress] = useState('');
+  const [addressFound, setAddressFound] = useState(false);
+
+  // Hook to read CIDs count for a user in the contract
+  const { data: cidCountData, refetch: refetchCidCount } = useScaffoldContractRead({
+    contractName: "YourContract",
+    functionName: "getUserCIDsCount",
+    args: [searchAddress],
+  });
+
+  // Function to check if the address has any CIDs
+  const checkAddress = async () => {
+    await refetchCidCount();
+    if (cidCountData !== undefined) {
+      setAddressFound(cidCountData > 0);
+    }
+  };
+
+  useEffect(() => {
+    if (cidCountData !== undefined) {
+      setAddressFound(cidCountData > 0);
+    }
+  }, [cidCountData]);
+
   return (
     <>
       <MetaHeader />
@@ -15,31 +56,27 @@ const Home: NextPage = () => {
 
       <div className="flex items-center flex-col pt-6">
 
-        <div 
-          className="flex flex-col bg-base-100 text-center items-center rounded-2xl w-full mx-auto py-5" 
-          style={{ maxWidth: "95%" }}
-        >
-          <div className="flex items-center justify-center gap-8 w-full">
-            <input 
-              type="text" 
-              placeholder="Address" 
-              className="input font-bai-jamjuree w-full rounded-2xl px-5 bg-secondary border border-primary text-lg sm:text-2xl placeholder-grey uppercase"
-              style={{ width: '50%' }}
-            />
-            
-            <button 
-              className="btn btn-primary rounded-2xl capitalize font-normal text-white text-lg w-24 flex items-center gap-1 hover:gap-2 transition-all"
-            >
-              Search
-            </button>
+      <div className="flex items-center justify-center gap-8 w-full">
+        <input 
+          type="text" 
+          placeholder="SEARCH NETWORK FOR ADDRESS" 
+          className="input font-bai-jamjuree w-full rounded-2xl px-5 bg-secondary border border-primary text-lg sm:text-2xl placeholder-grey uppercase"
+          style={{ width: '50%' }}
+          value={searchAddress}
+          onChange={(e) => setSearchAddress(e.target.value)}
+        />
 
-            <button 
-              className="btn btn-primary rounded-2xl capitalize font-normal text-white text-lg w-24 flex items-center gap-1 hover:gap-2 transition-all"
-            >
-              Follow
-            </button>
-          </div>
-
+        {/* Conditional rendering based on searchAddress and addressFound */}
+        {searchAddress && (
+            addressFound ? (
+              <button className="btn btn-primary rounded-2xl capitalize font-normal text-white text-lg w-24 flex items-center gap-1 hover:gap-2 transition-all"
+              >
+                Follow
+              </button>
+            ) : (
+              <p className="border-4 border-primary rounded-2xl p-2 bg-base-200">ADDRESS UNRECOGNIZED IN FOS NETWORK - PLEASE VERIFY AND RETRY</p>
+            )
+          )}
         </div>
 
       </div>

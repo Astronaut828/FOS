@@ -131,9 +131,9 @@ export const ContractData = () => {
   });
 
   // console.log("Events:", isLoadingEvents, errorReadingEvents, myGreetingChangeEvents);
-
   console.log("yourContract: ", yourContract);
   const { showAnimation } = useAnimationConfig(cidCount);
+
 
   return (
     <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">

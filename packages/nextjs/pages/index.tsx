@@ -108,18 +108,17 @@ const Home: NextPage = () => {
 
               {/* Single Entries */}
               <div 
-                  className="bg-base-300 text-left text-lg rounded-3xl w-full px-10 py-5 my-3"
-                  style={{ maxWidth: "99%" }}
-                > 
-
-                  <p> 
-                    A pinning service is a service that accepts CIDs from a user in order to host the data associated with them.
-                    The rationale behind defining a generic pinning service API is to have a baseline functionality and interface that can be provided by pinning services, so that tools can be built on top of a common base of functionality.
-                    In this presentation, IPFS creator Juan Benet discusses current and potential pinning use cases, and how a standardized IPFS pinning API can meet these envisioned needs.
-                    The API spec in this repo is the first step towards that future.
-                  </p>
-
+                className="bg-base-300 text-left text-lg rounded-3xl w-full px-10 py-5 my-3"
+                style={{ maxWidth: "99%" }}
+              > 
+                {/* Your existing code */}
+                <div>
+                  {/* List of followed addresses */}
+                  <h3>Followed Addresses:</h3>
+    
                 </div>
+
+              </div>
 
             </div>
 

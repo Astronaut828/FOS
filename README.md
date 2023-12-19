@@ -2,11 +2,11 @@
     <img src="packages/nextjs/public/clean-logo.png" width="40%" />
 </p>
 
-# FOS: Freedom of Speech
+# FOS - Network
 
 ## Introduction
 
-Welcome to FOS, a groundbreaking project designed to champion the unbridled exercise of freedom of speech through the innovative use of IPFS (InterPlanetary File System) and blockchain technology. The mission is to create a platform where voices can be heard without fear of censorship or retribution, ensuring that every opinion and expression is valued and preserved.
+Welcome to FOS, a project designed to champion the unbridled exercise of freedom of speech through the innovative use of IPFS (InterPlanetary File System) and blockchain technology. Our mission is to create a platform where voices can be heard without fear of censorship or retribution, ensuring that every opinion and expression is valued and preserved.
 
 ## Features
 

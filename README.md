@@ -17,9 +17,10 @@ Welcome to FOS, a project designed to champion the unbridled exercise of freedom
 
 ## How It Works
 
-1. **Content Submission:** Users can submit their content to the FOS platform.
-2. **IPFS Storage:** Submitted content is stored on IPFS, ensuring decentralized and permanent storage.
-3. **Blockchain Recording:** Each content submission is recorded as a transaction on the blockchain, providing an immutable record of existence.
+1. **Anonymous Accounts:** Users log in with an Ethereum address/wallet of their choice.
+2. **Content Submission:** Users can submit their content to the FOS platform.
+3. **IPFS Storage:** Submitted content is stored on IPFS, ensuring decentralized and permanent storage.
+4. **Blockchain Recording:** Each content submission is recorded as a transaction on the blockchain, providing an immutable record of existence.
 
 ## Getting Started
 

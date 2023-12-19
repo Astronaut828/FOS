@@ -40,3 +40,16 @@ Embrace your freedom of speech with FOS - a platform where every voice matters.
 ---
 
 ## To-Do's
+
+**UI:**
+
+- Fetch all posts from a user's following and display them on the homepage.
+- Show example posts/FOS instructions on the homepage (before login).
+
+**Contract:**
+
+- Fetch all posts from a user's following and construct an array for frontend usage.
+- Test contract functions.
+- Minimize gas costs.
+
+---

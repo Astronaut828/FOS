@@ -31,16 +31,12 @@ To get started with FOS:
 
 ## Contributing
 
-We welcome contributions from everyone. If you're interested in improving FOS, please read our contribution guidelines.
-
-## Support and Community
-
-Join our vibrant community to get support, share ideas, and collaborate. Find us on:
-
-- [Community Forum](#)
-- [Telegram](#)
-- [Twitter](#)
+We welcome contributions from everyone. If you're interested in improving FOS, please reach out to us.
 
 ---
 
 Embrace your freedom of speech with FOS - a platform where every voice matters.
+
+---
+
+## To-Do's

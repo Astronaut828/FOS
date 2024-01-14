@@ -69,6 +69,82 @@ const Home: NextPage = () => {
     }
   }, [followData]);
 
+  // Fetching CIDs for followed addresses
+  const [cidContents, setCidContents] = useState<CidContent[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [followedAddresses, setFollowedAddresses] = useState<string[]>([]);
+
+  interface CidContent {
+    cid: string;
+    content: {
+      text: string;
+      timestamp?: string;
+    };
+  }
+
+  const { data: cidCountDataFollowed } = useScaffoldContractRead({
+    contractName: "YourContract",
+    functionName: "getUserCIDsCount",
+    args: [searchAddress || undefined],
+  }); 
+
+  const { data: cidsDataFollowed } = useScaffoldContractRead({
+    contractName: "YourContract",
+    functionName: "getUserCIDs",
+    args: [searchAddress || undefined, cidCountDataFollowed],
+  });
+
+  useEffect(() => {
+    if (followData) {
+      setFollowedAddresses(Array.from(followData));
+    }
+  }, [followData]);
+
+  useEffect(() => {
+    if (cidsDataFollowed) {
+      // Create a new array from the readonly array to make it mutable
+      setMutableFollowData([...cidsDataFollowed]);
+    }
+  }, [cidsDataFollowed]);
+
+
+      {/* Currently the fetching only works when address is added to searchbar / then content apears in UI */}
+
+  // Fetching CIDs for followed addresses when the page is loaded
+  useEffect(() => {
+    const fetchCidContentsForFollowedAddresses = async () => {
+      if (mutableFollowData.length > 0) {
+        const contents = await Promise.all(
+          mutableFollowData.map(async (cid) => {
+            try {
+              // Using NFT.Storage gateway
+              const url = `https://${cid}.ipfs.nftstorage.link/blob`;
+              const response = await fetch(url);
+
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+
+              const data = await response.json();
+              return { cid, content: data };
+            } catch (error) {
+              console.error(error);
+            }
+          })
+        );
+
+        setCidContents(contents.filter((item): item is CidContent => item !== undefined));
+        setIsLoading(false);
+      }
+    };
+
+    fetchCidContentsForFollowedAddresses();
+  }, [mutableFollowData]);
+
+      {/* All this need to be worked on */}
+  
+
+
   return (
     <>
       <MetaHeader />
@@ -128,6 +204,24 @@ const Home: NextPage = () => {
                   {/* List of followed addresses */}
                   <h3>Followed Addresses:</h3>
                   {followData && followData.map((follow, index) => <p key={index}>{follow}</p>)}
+                </div>
+               <div>
+                  {/* CID's for followed addresses */}
+                  <h3>CID's for Followed Addresses:</h3>
+                  {cidContents &&
+                    cidContents.map((cidContent, index) => (
+                      <div key={index}>
+                        <p>
+                          <strong>IPFS CID:</strong> {cidContent.cid} -<strong> Timestamp:</strong>{" "}
+                          {cidContent.content.timestamp
+                            ? new Date(cidContent.content.timestamp).toLocaleString()
+                            : "Unavailable"}
+                        </p>
+                        <p>
+                          <strong>Content:</strong> {cidContent.content.text}
+                        </p>
+                      </div>
+                    ))}
                 </div>
               </div>
             </div>

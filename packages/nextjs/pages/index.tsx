@@ -100,22 +100,19 @@ const Home: NextPage = () => {
     }
   }, [followData]);
 
-  useEffect(() => {
-    if (cidsDataFollowed) {
-      // Create a new array from the readonly array to make it mutable
-      setMutableFollowData([...cidsDataFollowed]);
-    }
-  }, [cidsDataFollowed]);
+ // Fetching CIDs for followed addresses
+// TO DO - Fix this
 
 
-      {/* Currently the fetching only works when address is added to searchbar / then content apears in UI */}
 
-  // Fetching CIDs for followed addresses when the page is loaded
+  let manualCid = ["bafybeierxvbmw4qw66pnty2pg2iyumhdldjagsqvl427u75knmlx64ra44", "bafybeihxxxefzcaeft4cytoflro7r22agbokhvqss6subaor36uhnhf5a4",
+                    "bafybeideon4pzo5v6xqf37popjzgvkzp2u7rqrcg3znu5u222fiyi2vawi", "bafybeieia2pwrvkcgfw7k35nlsl6o3wc4tddtpg7ija4enr45mccifecby"]
+  // Fetching and displaying CID contents for followed addresses
   useEffect(() => {
     const fetchCidContentsForFollowedAddresses = async () => {
-      if (mutableFollowData.length > 0) {
+      if (manualCid.length > 0) {
         const contents = await Promise.all(
-          mutableFollowData.map(async (cid) => {
+          manualCid.map(async (cid) => {
             try {
               // Using NFT.Storage gateway
               const url = `https://${cid}.ipfs.nftstorage.link/blob`;
@@ -136,15 +133,11 @@ const Home: NextPage = () => {
         setCidContents(contents.filter((item): item is CidContent => item !== undefined));
         setIsLoading(false);
       }
-    };
-
+    }; 
     fetchCidContentsForFollowedAddresses();
   }, [mutableFollowData]);
 
-      {/* All this need to be worked on */}
   
-
-
   return (
     <>
       <MetaHeader />

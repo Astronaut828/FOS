@@ -63,6 +63,7 @@ contract YourContract {
     function followAddress(address _toFollow) public {
         require(_toFollow != address(0), "Invalid address");
         require(!userFollows[msg.sender][_toFollow], "Already following");
+		require(_toFollow != msg.sender, "Cannot follow yourself");
 
         userFollows[msg.sender][_toFollow] = true;
         followedAddresses[msg.sender].push(_toFollow); // Add the followed address to the list

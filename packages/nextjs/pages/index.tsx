@@ -74,6 +74,82 @@ const Home: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [followedAddresses, setFollowedAddresses] = useState<string[]>([]);
 
+  // Fetching CIDs for followed addresses
+
+  interface CidMappedEvent {
+    user: string;
+    index: number; // Changed from bigint to number
+    cid: string;
+  }
+
+  // State to store the CidMapped events of followed users
+  const [followedUsersCidMappedEvents, setFollowedUsersCidMappedEvents] = useState<CidMappedEvent[]>([]);
+
+  // Fetch CidMapped events (for all users)
+  const {
+    data: allCidMappedEvents,
+    isLoading: isLoadingCidMappedEvents,
+    error: errorReadingCidMappedEvents,
+  } = useScaffoldEventHistory({
+    contractName: "YourContract",
+    eventName: "CidMapped",
+    fromBlock: process.env.NEXT_PUBLIC_DEPLOY_BLOCK ? BigInt(process.env.NEXT_PUBLIC_DEPLOY_BLOCK) : 0n,
+    filters: {},
+    blockData: true,
+  });
+
+  // Use useEffect to filter CidMapped events for followed users
+  useEffect(() => {
+    if (allCidMappedEvents) {
+      allCidMappedEvents.forEach(event => console.log("Event Args: ", event.args));
+    }
+    if (allCidMappedEvents && mutableFollowData) {
+      const eventsForFollowedUsers = allCidMappedEvents
+        .filter(event => event.args.user && mutableFollowData.includes(event.args.user))
+        .map(event => ({
+          user: event.args.user as string,
+          index: Number(event.args.index), // Consider changing this based on actual type
+          cid: event.args.cid as string,
+        }));
+
+      console.log("Filtered Events For Followed Users: ", eventsForFollowedUsers);
+      setFollowedUsersCidMappedEvents(eventsForFollowedUsers);
+    }
+  }, [allCidMappedEvents, mutableFollowData]);
+
+  // Listening for new Events
+  useScaffoldEventSubscriber({
+    contractName: "YourContract",
+    eventName: "CidMapped",
+    listener: async (logs) => {
+      logs.forEach(async (log) => {
+        const { user, cid } = log.args;
+  
+        // Check if the user is one of the followed users
+        if (mutableFollowData.includes(user ?? '')) {
+          try {
+            // Fetch content for the new CID
+            const url = `https://${cid}.ipfs.nftstorage.link/blob`;
+            const response = await fetch(url);
+  
+            if (response.ok) {
+              const data = await response.json();
+  
+              // Update state with the new CID content
+              setCidContents(prevContents => [
+                ...prevContents,
+                { cid: cid || '', content: data },
+              ]);
+            }
+          } catch (error) {
+            console.error("Error fetching new CID content:", error);
+          }
+        }
+      });
+    },
+  });
+
+  // Setting up to fetch CID contents for followed addresses
   interface CidContent {
     cid: string;
     content: {
@@ -86,7 +162,7 @@ const Home: NextPage = () => {
     contractName: "YourContract",
     functionName: "getUserCIDsCount",
     args: [searchAddress || undefined],
-  }); 
+  });
 
   const { data: cidsDataFollowed } = useScaffoldContractRead({
     contractName: "YourContract",
@@ -100,22 +176,15 @@ const Home: NextPage = () => {
     }
   }, [followData]);
 
- // Fetching CIDs for followed addresses
-// TO DO - Fix this
-
-
-
-  let manualCid = ["bafybeierxvbmw4qw66pnty2pg2iyumhdldjagsqvl427u75knmlx64ra44", "bafybeihxxxefzcaeft4cytoflro7r22agbokhvqss6subaor36uhnhf5a4",
-                    "bafybeideon4pzo5v6xqf37popjzgvkzp2u7rqrcg3znu5u222fiyi2vawi", "bafybeieia2pwrvkcgfw7k35nlsl6o3wc4tddtpg7ija4enr45mccifecby"]
   // Fetching and displaying CID contents for followed addresses
   useEffect(() => {
     const fetchCidContentsForFollowedAddresses = async () => {
-      if (manualCid.length > 0) {
+      if (followedUsersCidMappedEvents.length > 0) {
         const contents = await Promise.all(
-          manualCid.map(async (cid) => {
+          followedUsersCidMappedEvents.map(async event => {
             try {
               // Using NFT.Storage gateway
-              const url = `https://${cid}.ipfs.nftstorage.link/blob`;
+              const url = `https://${event.cid}.ipfs.nftstorage.link/blob`;
               const response = await fetch(url);
 
               if (!response.ok) {
@@ -123,21 +192,21 @@ const Home: NextPage = () => {
               }
 
               const data = await response.json();
-              return { cid, content: data };
+              return { cid: event.cid, content: data };
             } catch (error) {
               console.error(error);
+              return null;
             }
-          })
+          }),
         );
 
         setCidContents(contents.filter((item): item is CidContent => item !== undefined));
         setIsLoading(false);
       }
-    }; 
+    };
     fetchCidContentsForFollowedAddresses();
-  }, [mutableFollowData]);
+  }, [followedUsersCidMappedEvents]);
 
-  
   return (
     <>
       <MetaHeader />
@@ -198,7 +267,7 @@ const Home: NextPage = () => {
                   <h3>Followed Addresses:</h3>
                   {followData && followData.map((follow, index) => <p key={index}>{follow}</p>)}
                 </div>
-               <div>
+                <div>
                   {/* CID's for followed addresses */}
                   <h3>CID's for Followed Addresses:</h3>
                   {cidContents &&

@@ -21,6 +21,7 @@ contract YourContract {
 
     event CidMapped(address indexed user, uint256 index, string cid);
 
+
 	// Constructor: Called once on contract deployment
 	// Check packages/hardhat/deploy/00_deploy_your_contract.ts
 	constructor(address _owner) {

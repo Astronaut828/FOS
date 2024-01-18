@@ -248,47 +248,60 @@ const Home: NextPage = () => {
 
         <div className="flex items-center w-full py-6 justify-center">
           <div
-            className="flex items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full"
+            className="flex items-center justify-center bg-base-100 rounded-3xl px-3 py-3 w-full"
             style={{ maxWidth: "95%" }}
           >
-            {/* Make Sticky and add scroll */}
-            <div
-              className="flex flex-col items-center justify-center bg-white bg-opacity-70 rounded-3xl px-3 py-4 w-full"
-              style={{ maxWidth: "99%" }}
-            >
+            {/* TO DO: Make Sticky and add scroll */}
               {/* Single Entries */}
               <div
-                className="bg-base-300 text-left text-lg rounded-3xl w-full px-10 py-5 my-3"
+                className="bg-base-300 text-left text-lg rounded-3xl w-full px-5 py-2 my-3"
                 style={{ maxWidth: "99%" }}
               >
-                {/* Your existing code */}
+
                 <div>
-                  {/* List of followed addresses */}
-                  <h3>Followed Addresses:</h3>
-                  {followData && followData.map((follow, index) => <p key={index}>{follow}</p>)}
+                    {/* CID's for followed addresses */}
+                    {cidContents &&
+                        [...cidContents] // Create a shallow copy
+                        .sort((a, b) => {
+                            const timestampA = a.content.timestamp || '1970-01-01T00:00:00Z';
+                            const timestampB = b.content.timestamp || '1970-01-01T00:00:00Z';
+                            return timestampB.localeCompare(timestampA);
+                        })
+                        .map((cidContent, index) => (
+                            <div 
+                                key={index} 
+                                className="flex flex-col items-center justify-center bg-base-100 bg-opacity-70 rounded-3xl px-8 py-4 w-full"
+                                style={{ margin: "15px 0" }}
+                            >
+                                <p>
+                                    <strong>IPFS CID:</strong> {cidContent.cid} - 
+                                    <strong> Timestamp: </strong> 
+                                    {cidContent.content.timestamp
+                                        ? new Date(cidContent.content.timestamp).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                          })
+                                        : "Unavailable"}
+                                </p>
+                                <p>
+                                    <strong>Content:</strong> {cidContent.content.text}
+                                </p>
+                            </div>
+                        ))
+                    }
                 </div>
-                <div>
-                  {/* CID's for followed addresses */}
-                  <h3>CID's for Followed Addresses:</h3>
-                  {cidContents &&
-                    cidContents.map((cidContent, index) => (
-                      <div key={index}>
-                        <p>
-                          <strong>IPFS CID:</strong> {cidContent.cid} -<strong> Timestamp:</strong>{" "}
-                          {cidContent.content.timestamp
-                            ? new Date(cidContent.content.timestamp).toLocaleString()
-                            : "Unavailable"}
-                        </p>
-                        <p>
-                          <strong>Content:</strong> {cidContent.content.text}
-                        </p>
-                      </div>
-                    ))}
-                </div>
+
               </div>
-            </div>
-          </div>
+          </div> 
         </div>
+        <div className="flex flex-col items-center justify-center" >
+              {/* List of followed addresses */}
+              <h3>FOR TESTING // Followed Addresses:</h3>
+              {followData && followData.map((follow, index) => <p key={index}>{follow}</p>)}
+            </div>
       </div>
     </>
   );

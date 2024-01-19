@@ -3,9 +3,9 @@ import Link from "next/link";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { create } from "zustand";
+import { CurrencyDollarIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { MetaHeader } from "~~/components/MetaHeader";
 import {
-  useAnimationConfig,
   useScaffoldContract,
   useScaffoldContractRead,
   useScaffoldContractWrite,
@@ -17,6 +17,8 @@ const Home: NextPage = () => {
   // Importing the contract ABI
   const { data: yourContract } = useScaffoldContract({ contractName: "YourContract" });
   const { address } = useAccount();
+
+  const [visible, setVisible] = useState(true);
 
   // Searchbar functionality
   const [searchAddress, setSearchAddress] = useState("");
@@ -48,10 +50,20 @@ const Home: NextPage = () => {
     try {
       await followAddressAsync({ args: [addressToFollow] });
       setSearchAddress("");
+
+      setMutableFollowData(prevData => {
+        if (!prevData.includes(addressToFollow)) {
+          return [...prevData, addressToFollow];
+        }
+        return prevData;
+      });
     } catch (error) {
       console.error("Error following address:", error);
     }
   };
+
+  // Hook to unfollow 
+  const [unfollow, setUnfollow] = useState(true);
 
   // Hook to read the followed addresses for a user in the contract
   const { data: followData } = useScaffoldContractRead({
@@ -75,10 +87,9 @@ const Home: NextPage = () => {
   const [followedAddresses, setFollowedAddresses] = useState<string[]>([]);
 
   // Fetching CIDs for followed addresses
-
   interface CidMappedEvent {
     user: string;
-    index: number; // Changed from bigint to number
+    index: number;
     cid: string;
   }
 
@@ -121,25 +132,22 @@ const Home: NextPage = () => {
   useScaffoldEventSubscriber({
     contractName: "YourContract",
     eventName: "CidMapped",
-    listener: async (logs) => {
-      logs.forEach(async (log) => {
+    listener: async logs => {
+      logs.forEach(async log => {
         const { user, cid } = log.args;
-  
+
         // Check if the user is one of the followed users
-        if (mutableFollowData.includes(user ?? '')) {
+        if (mutableFollowData.includes(user ?? "")) {
           try {
             // Fetch content for the new CID
             const url = `https://${cid}.ipfs.nftstorage.link/blob`;
             const response = await fetch(url);
-  
+
             if (response.ok) {
               const data = await response.json();
-  
+
               // Update state with the new CID content
-              setCidContents(prevContents => [
-                ...prevContents,
-                { cid: cid || '', content: data },
-              ]);
+              setCidContents(prevContents => [...prevContents, { cid: cid || "", content: data }]);
             }
           } catch (error) {
             console.error("Error fetching new CID content:", error);
@@ -248,60 +256,81 @@ const Home: NextPage = () => {
 
         <div className="flex items-center w-full py-6 justify-center">
           <div
-            className="flex items-center justify-center bg-base-100 rounded-3xl px-3 py-3 w-full"
+            className="flex items-center justify-center bg-base-100 rounded-3xl px-1 py-2 w-full"
             style={{ maxWidth: "95%" }}
           >
             {/* TO DO: Make Sticky and add scroll */}
-              {/* Single Entries */}
-              <div
-                className="bg-base-300 text-left text-lg rounded-3xl w-full px-5 py-2 my-3"
-                style={{ maxWidth: "99%" }}
-              >
+            {/* Single Entries */}
+            <div
+              className="bg-base-300 text-left text-lg rounded-3xl w-full px-4 py-1 my-1"
+              style={{ maxWidth: "99%" }}
+            >
+              <div>
+                {/* CID's for followed addresses */}
+                {cidContents &&
+                  cidContents.map((cidContent, index) => {
+                    // Find the corresponding user for this CID content
+                    const postCreator = followedUsersCidMappedEvents.find(event => event.cid === cidContent.cid)?.user;
 
-                <div>
-                    {/* CID's for followed addresses */}
-                    {cidContents &&
-                        [...cidContents] // Create a shallow copy
-                        .sort((a, b) => {
-                            const timestampA = a.content.timestamp || '1970-01-01T00:00:00Z';
-                            const timestampB = b.content.timestamp || '1970-01-01T00:00:00Z';
-                            return timestampB.localeCompare(timestampA);
-                        })
-                        .map((cidContent, index) => (
-                            <div 
-                                key={index} 
-                                className="flex flex-col items-center justify-center bg-base-100 bg-opacity-70 rounded-3xl px-8 py-4 w-full"
-                                style={{ margin: "15px 0" }}
+                    return (
+                      <div
+                        key={index}
+                        className="flex flex-col items-center justify-center bg-base-100 bg-opacity-70 rounded-3xl p-4 md:px-8 w-full"
+                        style={{ margin: "15px 0" }}
+                      >
+                        <div className="post-info grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-4 w-full  text-sm px-3 pb-2">
+                          <div className="post-info-item flex items-center">
+                            <strong className="mr-1">Posted by:</strong> {postCreator || "Unknown"}
+                            <button
+                              className="btn btn-circle btn-ghost h-6 w-6 bg-base-200 bg-opacity-80 z-0 min-h-0  ml-1"
+                              onClick={() => setVisible(false)}
                             >
-                                <p>
-                                    <strong>IPFS CID:</strong> {cidContent.cid} - 
-                                    <strong> Timestamp: </strong> 
-                                    {cidContent.content.timestamp
-                                        ? new Date(cidContent.content.timestamp).toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit'
-                                          })
-                                        : "Unavailable"}
-                                </p>
-                                <p>
-                                    <strong>Content:</strong> {cidContent.content.text}
-                                </p>
-                            </div>
-                        ))
-                    }
-                </div>
-
+                              <TrashIcon className="h-5 w-5" />
+                            </button>
+                            <button
+                              className="btn btn-circle btn-ghost h-6 w-6 bg-base-200 bg-opacity-80 z-0 min-h-0 drop-shadow-md ml-1"
+                              onClick={() => setUnfollow(false)}
+                            >
+                              <CurrencyDollarIcon className="h-5 w-5" />
+                            </button>
+                          </div>
+                          <div className="post-info-item flex items-center">
+                            <strong className="mr-1">IPFS CID:</strong> {cidContent.cid}
+                          </div>
+                          <div className="post-info-item flex items-center">
+                            <strong className="mr-1">Timestamp:</strong>{" "}
+                            {cidContent.content.timestamp
+                              ? new Date(cidContent.content.timestamp).toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                              : "Unavailable"}
+                          </div>
+                        </div>
+                        <div
+                          key={index}
+                          className="flex flex-col items-center justify-center bg-base-100 bg-opacity-40 rounded-3xl p-4 md:px-8 w-full" 
+                          style={{ margin: "5px 0" }}
+                        >
+                          <div className="post-content text-base md:text-lg">
+                            <p>{cidContent.content.text}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
               </div>
-          </div> 
-        </div>
-        <div className="flex flex-col items-center justify-center" >
-              {/* List of followed addresses */}
-              <h3>FOR TESTING // Followed Addresses:</h3>
-              {followData && followData.map((follow, index) => <p key={index}>{follow}</p>)}
             </div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          {/* List of followed addresses */}
+          <h3>FOR TESTING // Followed Addresses:</h3>
+          {followData && followData.map((follow, index) => <p key={index}>{follow}</p>)}
+        </div>
       </div>
     </>
   );

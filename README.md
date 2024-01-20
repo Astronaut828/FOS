@@ -33,27 +33,28 @@ To get started with FOS:
 
 We welcome contributions from everyone. If you're interested in improving FOS, please reach out to us.
 
----
+-------
 
-Embrace your freedom of speech with FOS - a platform where every voice matters.
+## TO DO:
 
----
+**UX/UI**
 
-## To-Do's
+**Content Window Features**
+- Unfollow Button: Enable users to unfollow content/users.
+- Tip Button: Allow users to tip content creators.
+- ENS Translator: Translate Ethereum addresses to ENS domains.
+- Readability Enhancements: Ensure good readability using responsive text classes, and implement text wrapping or truncation as necessary.
 
-**UI:**
+**Logged Out View**
+- Example Posts/FOS Instructions: Display example posts or FOS instructions on the homepage for users before they log in.
+- Warning Post: Show a warning or informational post for users who are not logged in (Immutable Content Warning). (User UI)
 
-- Fetch all posts from a user's following and display them on the homepage.
-- Show example posts/FOS instructions on the homepage (before login).
-
-**Contract:**
-
-- Fetch all posts from a user's following and construct an array for frontend usage.
-- Test contract functions.
-- Minimize gas costs.
-
-**IPFS:**
-
-- Change NFT.UP API, transition from using the NFT.UP API to direct access, eliminating any third-party involvement for content posting.
-
----
+-------
+**Contract Development**
+- Contract Logic: Implement logic in the smart contract to handle unfollow actions.
+- Function Testing: Test all contract functions thoroughly.
+- Gas Cost Optimization: Work on minimizing gas costs associated with contract interactions.
+  
+-------
+**IPFS Integration**
+- API Transition: Shift from using the NFT.Storage API to direct IPFS access, eliminating third-party involvement in content posting.

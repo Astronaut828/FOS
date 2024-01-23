@@ -95,28 +95,31 @@ export const ContractInteraction = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-10 mt-5 lg:py-auto w-full max-w-[98vw]">
+    <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-5 px-2 mt-5 lg:py-auto w-full max-w-[98vw]">
       <div
-        className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-5 w-full"
+        className="flex flex-col items-center justify-center bg-base-100 rounded-3xl px-3 py-8 w-full"
         style={{ maxWidth: "95%" }}
       >
-
-        {/* Warning Message 
-        <div className={`mt-10 flex gap-2 ${visible ? "" : "invisible"} max-w-2xl`}>
-        <div className="flex gap-5 bg-base-200 bg-opacity-80 z-0 p-7 rounded-2xl shadow-lg">
-        <span className="text-3xl">👋🏻 TEXT-WARNING</span>
-        <span className="text-3xl">IPFS Info and understanding of immutability</span>
+        {/* Warning Message */}
+        <div className={`fixed top-50 left-0 right-0 z-50 ${visible ? "" : "invisible"} max-w-2xl mx-auto`}>
+          <div className="flex justify-between items-center gap-5 bg-base-300 bg-opacity-80 rounded-2xl shadow-lg py-10 px-5">
+            <div>
+              <span className="text-3xl">
+                🚨 Important: Data Immutability Notice<br></br>
+              </span>
+              <span className="text-2xl">
+                <br></br>Your content is stored on IPFS and its identifier (CID) is recorded on the blockchain. This
+                process is permanent: once uploaded, content cannot be altered or removed. Please upload responsibly.
+              </span>
+            </div>
+            <button
+              className="btn btn-circle btn-primary border-3 border-base-100 h-7 w-7 ml-4 bg-white bg-opacity-40 min-h-0 drop-shadow-md"
+              onClick={() => setVisible(false)}
+            >
+              <XMarkIcon className="h-4 w-4" />
+            </button>
+          </div>
         </div>
-        <button
-        className="btn btn-circle btn-ghost h-6 w-6 bg-base-200 bg-opacity-80 z-0 min-h-0 drop-shadow-md"
-        onClick={() => setVisible(false)}
-        >
-        <XMarkIcon className="h-4 w-4" />
-        </button>
-        </div>  
-        */}
-
-        <span className="text-3xl sm:text-5xl text-base-300 mb-5">articulate your opinions and ideas</span>
         <textarea
           placeholder="WHAT'S ON YOUR MIND?"
           value={newText}

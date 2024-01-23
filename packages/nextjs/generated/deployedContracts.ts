@@ -44,6 +44,25 @@ const contracts = {
               type: "event",
             },
             {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: true,
+                  internalType: "address",
+                  name: "user",
+                  type: "address",
+                },
+                {
+                  indexed: true,
+                  internalType: "address",
+                  name: "follower",
+                  type: "address",
+                },
+              ],
+              name: "NewFollowerAdded",
+              type: "event",
+            },
+            {
               inputs: [
                 {
                   internalType: "address",

@@ -20,6 +20,7 @@ contract YourContract {
 	mapping(address => address[]) private followedAddresses;
 
     event CidMapped(address indexed user, uint256 index, string cid);
+	event NewFollowerAdded(address indexed user, address indexed follower);
 
 
 	// Constructor: Called once on contract deployment
@@ -68,6 +69,7 @@ contract YourContract {
 
         userFollows[msg.sender][_toFollow] = true;
         followedAddresses[msg.sender].push(_toFollow); // Add the followed address to the list
+		emit NewFollowerAdded(_toFollow, msg.sender);
     }
 
     // Function to get the list of followed addresses

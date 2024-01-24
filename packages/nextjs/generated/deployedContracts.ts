@@ -191,6 +191,19 @@ const contracts = {
               inputs: [
                 {
                   internalType: "address",
+                  name: "_toUnfollow",
+                  type: "address",
+                },
+              ],
+              name: "unfollowAddress",
+              outputs: [],
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "address",
                   name: "",
                   type: "address",
                 },

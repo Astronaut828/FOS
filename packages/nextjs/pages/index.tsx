@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ethers } from "ethers";
 import type { NextPage } from "next";
+import { parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { create } from "zustand";
 import { CurrencyDollarIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -44,6 +46,11 @@ const Home: NextPage = () => {
   });
 
   const handleFollow = async (addressToFollow: string) => {
+    if (address === addressToFollow) {
+      console.error("Cannot follow yourself.");
+      return;
+    }
+
     try {
       await Promise.all([followAddressAsync({ args: [addressToFollow] })]);
       setSearchAddress("");
@@ -75,14 +82,6 @@ const Home: NextPage = () => {
     }
     refetchAllCidsInclNewFollowed();
   }, [followData]);
-
-  // TO DO
-  // Hook to tip a user
-  const [tipUser, setPayable] = useState(true);
-
-  // TO DO
-  // Hook to unfollow
-  const [unfollow, setUnfollow] = useState(true);
 
   // Fetching CIDs for followed addresses
   const [cidContents, setCidContents] = useState<CidContent[]>([]);
@@ -214,6 +213,27 @@ const Home: NextPage = () => {
     fetchCidContentsForFollowedAddresses();
   }, [followedUsersCidMappedEvents]);
 
+  // Unfollow functionality
+  const [unfollow, setUnfollow] = useState(true);
+
+  const { writeAsync: unfollowAddressAsync } = useScaffoldContractWrite({
+    contractName: "YourContract",
+    functionName: "unfollowAddress",
+    args: [address],
+  });
+
+  const handleUnfollow = async (addressToUnfollow: string) => {
+    try {
+      await unfollowAddressAsync({ args: [addressToUnfollow] });
+      console.log(`Unfollowed address: ${addressToUnfollow}`);
+
+      // Optionally, update the UI to reflect the unfollow action
+      setMutableFollowData(currentData => currentData.filter(addr => addr !== addressToUnfollow));
+    } catch (error) {
+      console.error(`Error unfollowing address ${addressToUnfollow}:`, error);
+    }
+  };
+
   return (
     <>
       <MetaHeader />
@@ -232,7 +252,7 @@ const Home: NextPage = () => {
             <input
               type="text"
               placeholder="SEARCH NETWORK FOR ADDRESS"
-              className="input font-bai-jamjuree w-full rounded-2xl px-5 bg-secondary border border-primary text-lg sm:text-2xl placeholder-grey uppercase"
+              className="input font-bai-jamjuree w-full rounded-2xl px-5 bg-secondary border border-primary text-lg sm:text-xl placeholder-grey uppercase"
               style={{ width: "50%" }}
               value={searchAddress}
               onChange={e => setSearchAddress(e.target.value)}
@@ -279,8 +299,7 @@ const Home: NextPage = () => {
                       );
                     })
                     .map((cidContent, index) => {
-                      // Find the corresponding user for this CID content
-                      const postCreator = followedUsersCidMappedEvents.find(
+                      const postCreator: string | undefined = followedUsersCidMappedEvents.find(
                         event => event.cid === cidContent.cid,
                       )?.user;
 
@@ -294,16 +313,11 @@ const Home: NextPage = () => {
                             <div className="post-info-item flex items-center">
                               <strong className="mr-1">Posted by:</strong> {postCreator || "Unknown"}
                               <button
-                                className="btn btn-circle btn-ghost h-6 w-6 bg-base-200 bg-opacity-80 z-0 min-h-0  ml-1"
-                                onClick={() => setPayable(false)}
+                                className="btn btn-circle btn-ghost h-6 w-6 bg-base-200 bg-opacity-80 z-0 min-h-0 ml-1"
+                                onClick={() => handleUnfollow(postCreator ?? "")}
+                                title="Unfollow Address"
                               >
                                 <TrashIcon className="h-5 w-5" />
-                              </button>
-                              <button
-                                className="btn btn-circle btn-ghost h-6 w-6 bg-base-200 bg-opacity-80 z-0 min-h-0 drop-shadow-md ml-1"
-                                onClick={() => setUnfollow(false)}
-                              >
-                                <CurrencyDollarIcon className="h-5 w-5" />
                               </button>
                             </div>
                             <div className="post-info-item flex items-center">
@@ -327,7 +341,7 @@ const Home: NextPage = () => {
                             className="flex flex-col items-center justify-center bg-base-100 bg-opacity-40 rounded-3xl p-4 md:px-8 w-full"
                             style={{ margin: "5px 0" }}
                           >
-                            <div className="post-content text-base md:text-lg">
+                            <div className="post-content text-base md:text-lg" style={{ whiteSpace: "pre-wrap" }}>
                               <p>{cidContent.content.text}</p>
                             </div>
                           </div>
@@ -373,12 +387,6 @@ const Home: NextPage = () => {
               </div>
             )}
           </div>
-        </div>
-
-        <div className="flex flex-col items-center justify-center">
-          {/* List of followed addresses */}
-          <h3>FOR TESTING // Followed Addresses:</h3>
-          {followData && followData.map((follow, index) => <p key={index}>{follow}</p>)}
         </div>
       </div>
     </>

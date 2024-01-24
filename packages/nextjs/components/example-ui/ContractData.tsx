@@ -132,7 +132,7 @@ export const ContractData = () => {
 
   // console.log("Events:", isLoadingEvents, errorReadingEvents, myGreetingChangeEvents);
   const { showAnimation } = useAnimationConfig(cidCount);
-  
+
   return (
     <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-5 px-2 mt-5 lg:py-auto w-full max-w-[98vw]">
       <div
@@ -175,7 +175,7 @@ export const ContractData = () => {
               </p>
 
               {/* Post Content */}
-              <div className="text-lg mt-5">
+              <div className="text-lg mt-5" style={{ whiteSpace: "pre-wrap" }}>
                 <strong>Content:</strong>
                 <p>{currentPost.content.text}</p>
               </div>

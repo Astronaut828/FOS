@@ -72,10 +72,42 @@ contract YourContract {
 		emit NewFollowerAdded(_toFollow, msg.sender);
     }
 
-    // Function to get the list of followed addresses
-    function getFollowedAddresses(address user) public view returns (address[] memory) {
-        return followedAddresses[user];
-    }
+	// Function to unfollow an address by setting the mapping to false and overwriting the address in the array
+	function unfollowAddress(address _toUnfollow) public {
+		require(_toUnfollow != address(0), "Invalid address");
+		require(userFollows[msg.sender][_toUnfollow], "Not following this address");
+
+		userFollows[msg.sender][_toUnfollow] = false;
+
+		// Iterate over the array to find and overwrite the address with null address
+		for (uint256 i = 0; i < followedAddresses[msg.sender].length; i++) {
+			if (followedAddresses[msg.sender][i] == _toUnfollow) {
+				followedAddresses[msg.sender][i] = address(0); // Overwrite with null address
+				break;
+			}
+		}
+	}
+
+    // Function to get the list of followed addresses, ignoring the null addresses
+	function getFollowedAddresses(address user) public view returns (address[] memory) {
+		uint256 count = 0;
+		for (uint256 i = 0; i < followedAddresses[user].length; i++) {
+			if (followedAddresses[user][i] != address(0)) {
+				count++;
+			}
+		}
+
+		address[] memory validFollowed = new address[](count);
+		uint256 index = 0;
+		for (uint256 i = 0; i < followedAddresses[user].length; i++) {
+			if (followedAddresses[user][i] != address(0)) {
+				validFollowed[index] = followedAddresses[user][i];
+				index++;
+			}
+		}
+
+		return validFollowed;
+	}
 
 	/**
 	 * Function that allows the owner to withdraw all the Ether in the contract

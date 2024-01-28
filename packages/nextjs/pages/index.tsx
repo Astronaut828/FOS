@@ -55,12 +55,25 @@ const Home: NextPage = () => {
       await Promise.all([followAddressAsync({ args: [addressToFollow] })]);
       setSearchAddress("");
 
+      console.log("Before updating mutableFollowData:", mutableFollowData);
       setMutableFollowData(prevData => {
-        if (!prevData.includes(addressToFollow)) {
-          return [...prevData, addressToFollow];
-        }
-        return prevData;
+        const updatedData = prevData.includes(addressToFollow) ? prevData : [...prevData, addressToFollow];
+        console.log("After updating mutableFollowData:", updatedData);
+        return updatedData;
       });
+
+      // Filter and update followedUsersCidMappedEvents for the new address
+      if (allCidMappedEvents) {
+        const newAddressEvents = allCidMappedEvents
+          .filter(event => event.args.user === addressToFollow)
+          .map(event => ({
+            user: event.args.user as string,
+            index: Number(event.args.index),
+            cid: event.args.cid as string,
+          }));
+
+        setFollowedUsersCidMappedEvents(prevEvents => [...prevEvents, ...newAddressEvents]);
+      }
     } catch (error) {
       console.error("Error following address:", error);
     }
@@ -80,7 +93,6 @@ const Home: NextPage = () => {
       const convertedData = Array.from(followData);
       setMutableFollowData(convertedData);
     }
-    refetchAllCidsInclNewFollowed();
   }, [followData]);
 
   // Fetching CIDs for followed addresses
@@ -109,6 +121,9 @@ const Home: NextPage = () => {
 
   // Use useEffect to filter CidMapped events for followed users
   useEffect(() => {
+    console.log("All CidMapped events received:", allCidMappedEvents);
+    console.log("Current mutableFollowData:", mutableFollowData);
+
     if (allCidMappedEvents && mutableFollowData) {
       const eventsForFollowedUsers = allCidMappedEvents
         .filter(event => event.args.user && mutableFollowData.includes(event.args.user))
@@ -118,6 +133,7 @@ const Home: NextPage = () => {
           cid: event.args.cid as string,
         }));
 
+      console.log("Filtered events for followed users:", eventsForFollowedUsers);
       setFollowedUsersCidMappedEvents(eventsForFollowedUsers);
     }
   }, [allCidMappedEvents, mutableFollowData]);
@@ -127,8 +143,11 @@ const Home: NextPage = () => {
     contractName: "YourContract",
     eventName: "CidMapped",
     listener: async logs => {
+      console.log("New CidMapped event received:", logs);
       logs.forEach(async log => {
         const { user, cid } = log.args;
+        if (!cid) return;
+
         // Check if the user is one of the followed users and if the CID is not already in the list
         if (mutableFollowData.includes(user ?? "") && !cidContents.some(content => content.cid === cid)) {
           try {
@@ -141,10 +160,11 @@ const Home: NextPage = () => {
 
               // Update state with the new CID content
               setCidContents(prevContents => {
-                if (!prevContents.some(content => content.cid === cid)) {
-                  return [...prevContents, { cid: cid || "", content: data }];
-                }
-                return prevContents;
+                const newContents = prevContents.some(content => content.cid === cid)
+                  ? prevContents
+                  : [...prevContents, { cid, content: data }];
+                console.log("Updated cidContents with new content:", newContents);
+                return newContents;
               });
             }
           } catch (error) {
@@ -155,7 +175,7 @@ const Home: NextPage = () => {
     },
   });
 
-  // Setting up to fetch CID contents for followed addresses
+  // Setting up to fetch CID contents for followed addresses.
   interface CidContent {
     cid: string;
     content: {
@@ -176,20 +196,17 @@ const Home: NextPage = () => {
     args: [searchAddress || undefined, cidCountDataFollowed],
   });
 
-  // Fuction to refetch all CIDs for followed addresses
-  const [newFollowRecorded, setNewFollowRecorded] = useState(false);
-  const refetchAllCidsInclNewFollowed = async () => {
-    setNewFollowRecorded(true);
-  };
-
   // Fetching and displaying CID contents for followed addresses
   useEffect(() => {
     const fetchCidContentsForFollowedAddresses = async () => {
-      if (followedUsersCidMappedEvents.length > 0 || newFollowRecorded) {
+      console.log("Initiating fetch for CID contents");
+      console.log("Current followedUsersCidMappedEvents:", followedUsersCidMappedEvents);
+
+      if (followedUsersCidMappedEvents.length > 0) {
         const contents = await Promise.all(
           followedUsersCidMappedEvents.map(async event => {
+            console.log(`Fetching content for CID: ${event.cid}`);
             try {
-              // Using NFT.Storage gateway
               const url = `https://${event.cid}.ipfs.nftstorage.link/blob`;
               const response = await fetch(url);
 
@@ -198,18 +215,21 @@ const Home: NextPage = () => {
               }
 
               const data = await response.json();
+              console.log(`Fetched content for CID ${event.cid}:`, data);
               return { cid: event.cid, content: data };
             } catch (error) {
-              console.error(error);
+              console.error(`Error fetching content for CID ${event.cid}:`, error);
               return null;
             }
           }),
         );
-        setCidContents(contents.filter((item): item is CidContent => item !== undefined));
+
+        console.log("Fetched contents for all followed CIDs:", contents);
+        setCidContents(contents.filter((item): item is CidContent => item !== null));
         setIsLoading(false);
-        setNewFollowRecorded(false);
       }
     };
+
     fetchCidContentsForFollowedAddresses();
   }, [followedUsersCidMappedEvents]);
 
@@ -259,20 +279,21 @@ const Home: NextPage = () => {
             />
 
             {/* Conditional rendering based on searchAddress and addressFound */}
-            {searchAddress &&
-              (addressFound ? (
-                <button
-                  className="btn btn-primary rounded-2xl capitalize font-normal text-white text-lg w-24 flex items-center gap-1 hover:gap-2 transition-all"
-                  onClick={() => handleFollow(searchAddress)}
-                >
-                  Follow
-                </button>
-              ) : (
-                <p className="border-4 border-primary rounded-2xl p-2 bg-base-200">
-                  ADDRESS UNRECOGNIZED IN FOS NETWORK - PLEASE VERIFY AND RETRY
-                </p>
-              ))}
+            {searchAddress && addressFound && (
+              <button
+                className="btn btn-primary rounded-2xl capitalize font-normal text-white text-lg w-24 border-green-600 border-2 flex items-center gap-1 hover:gap-2 transition-all"
+                onClick={() => handleFollow(searchAddress)}
+              >
+                Follow
+              </button>
+            )}
           </div>
+          {/* Conditional rendering for the warning message */}
+          {searchAddress && !addressFound && (
+            <p className="border-2 border-orange-600 text-orange-600 rounded-2xl p-2 bg-base-200 mt-2">
+              ADDRESS UNRECOGNIZED IN FOS NETWORK - PLEASE VERIFY AND RETRY
+            </p>
+          )}
         </div>
 
         {/* Posts */}
@@ -288,7 +309,6 @@ const Home: NextPage = () => {
                 style={{ maxWidth: "99%" }}
               >
                 {followedUsersCidMappedEvents.length > 0 || cidContents.length > 0 ? (
-                  // Display Posts from followed addresses
                   cidContents
                     .slice() // Create a shallow copy of the array
                     .sort((a, b) => {
@@ -299,13 +319,14 @@ const Home: NextPage = () => {
                       );
                     })
                     .map((cidContent, index) => {
+                      console.log("Rendering post:", cidContent);
                       const postCreator: string | undefined = followedUsersCidMappedEvents.find(
                         event => event.cid === cidContent.cid,
                       )?.user;
 
                       return (
                         <div
-                          key={index}
+                          key={cidContent.cid} // index
                           className="flex flex-col items-center justify-center bg-base-100 bg-opacity-70 rounded-3xl p-4 md:px-8 w-full"
                           style={{ margin: "15px 0" }}
                         >

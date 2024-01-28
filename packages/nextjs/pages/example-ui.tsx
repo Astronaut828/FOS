@@ -8,7 +8,7 @@ const ExampleUI: NextPage = () => {
     <>
       <MetaHeader
         title="FOS | COMPOSE"
-        description="Excercise your FOS."
+        description="FOS Network - Compose your immutable content"
       >
         {/* We are importing the font this way to lighten the size of SE2. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,9 +18,7 @@ const ExampleUI: NextPage = () => {
       <div className="flex items-center flex-col flex-grow">
         <ContractInteraction />
         <ContractData />
-        
       </div>
-
     </>
   );
 };

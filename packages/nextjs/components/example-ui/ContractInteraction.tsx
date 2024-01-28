@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
@@ -121,15 +120,15 @@ export const ContractInteraction = () => {
           </div>
         </div>
         <textarea
-          placeholder="WHAT'S ON YOUR MIND?"
+          placeholder="Compose your message here..."
           value={newText}
           maxLength={maxChars}
           style={{
-            maxWidth: "95%",
+            maxWidth: "99%", // Adjusted to match the content area
             maxHeight: "95%",
             height: "40vh",
             resize: "none",
-            padding: "12px",
+            padding: "12px", // Adjust padding if needed to match content area padding
           }}
           className="input font-bai-jamjuree w-full border border-primary rounded-3xl text-lg sm:text-xl placeholder-grey"
           onChange={handleTextChange}

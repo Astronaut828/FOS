@@ -30,3 +30,15 @@ p {
 .btn.btn-ghost {
   @apply shadow-none;
 }
+
+.warning-message {
+  opacity: 0;
+  height: 0;
+  margin-bottom: 0;
+  transition: opacity 0.3s, height 0.3s, margin-bottom 0.3s;
+}
+
+input:not(:valid) + .warning-message {
+  opacity: 1;
+  height: auto;
+}

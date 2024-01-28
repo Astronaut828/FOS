@@ -98,8 +98,7 @@ export const Header = () => {
             <Image alt="SE2 logo" className="cursor-pointer" fill src="/clean-logo.png" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold leading-tight">FOS</span>
-            <span className="text-xs">freedom of speech</span>
+            <span className="font-bold leading-tight">FOS Network</span>
           </div>
         </Link>
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">

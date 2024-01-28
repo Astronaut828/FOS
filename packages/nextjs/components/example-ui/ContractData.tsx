@@ -161,7 +161,7 @@ export const ContractData = () => {
         </div>
 
         {/* CID list */}
-        <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-13 mt-5 lg:py-auto w-full max-w-[95vw]">
+        <div className="flex flex-col justify-center items-center rounded-3xl bg-base-300 py-10 px-13 mt-5 lg:py-auto w-full max-w-[99vw]">
           <h3 className="text-lg font-bold mb-2">User CID's & Content:</h3>
           {/* Display the current post */}
           {address && cidContents.length > 0 ? (
@@ -183,7 +183,6 @@ export const ContractData = () => {
           ) : (
             <p>{address ? "No CIDs found." : "Not logged in."}</p>
           )}
-          {/* ... other UI elements ... */}
         </div>
       </div>
     </div>

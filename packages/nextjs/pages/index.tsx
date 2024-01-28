@@ -246,9 +246,16 @@ const Home: NextPage = () => {
     try {
       await unfollowAddressAsync({ args: [addressToUnfollow] });
       console.log(`Unfollowed address: ${addressToUnfollow}`);
-
-      // Optionally, update the UI to reflect the unfollow action
+  
       setMutableFollowData(currentData => currentData.filter(addr => addr !== addressToUnfollow));
+  
+      setCidContents(currentContents => currentContents.filter(content => {
+        const isContentFromUnfollowedUser = followedUsersCidMappedEvents.some(event => 
+          event.user === addressToUnfollow && event.cid === content.cid
+        );
+        return !isContentFromUnfollowedUser;
+      }));
+  
     } catch (error) {
       console.error(`Error unfollowing address ${addressToUnfollow}:`, error);
     }

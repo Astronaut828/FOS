@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ethers } from "ethers";
 import type { NextPage } from "next";
-import { parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { create } from "zustand";
 import { CurrencyDollarIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -53,15 +51,15 @@ const Home: NextPage = () => {
 
     try {
       await Promise.all([followAddressAsync({ args: [addressToFollow] })]);
-      setSearchAddress("");
+      setSearchAddress(""); // Clear the search bar after following an address
 
-      console.log("Before updating mutableFollowData:", mutableFollowData);
+      // console.log("Before updating mutableFollowData:", mutableFollowData);
       setMutableFollowData(prevData => {
         const updatedData = prevData.includes(addressToFollow) ? prevData : [...prevData, addressToFollow];
-        console.log("After updating mutableFollowData:", updatedData);
+        // console.log("After updating mutableFollowData:", updatedData);
         return updatedData;
       });
-
+      
       // Filter and update followedUsersCidMappedEvents for the new address
       if (allCidMappedEvents) {
         const newAddressEvents = allCidMappedEvents
@@ -100,6 +98,8 @@ const Home: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   // State to store the CidMapped events of followed users
   const [followedUsersCidMappedEvents, setFollowedUsersCidMappedEvents] = useState<CidMappedEvent[]>([]);
+
+  // Event Interface for CidMapped
   interface CidMappedEvent {
     user: string;
     index: number;
@@ -121,8 +121,8 @@ const Home: NextPage = () => {
 
   // Use useEffect to filter CidMapped events for followed users
   useEffect(() => {
-    console.log("All CidMapped events received:", allCidMappedEvents);
-    console.log("Current mutableFollowData:", mutableFollowData);
+    // console.log("All CidMapped events received:", allCidMappedEvents);
+    // console.log("Current mutableFollowData:", mutableFollowData);
 
     if (allCidMappedEvents && mutableFollowData) {
       const eventsForFollowedUsers = allCidMappedEvents
@@ -133,7 +133,7 @@ const Home: NextPage = () => {
           cid: event.args.cid as string,
         }));
 
-      console.log("Filtered events for followed users:", eventsForFollowedUsers);
+      // console.log("Filtered events for followed users:", eventsForFollowedUsers);
       setFollowedUsersCidMappedEvents(eventsForFollowedUsers);
     }
   }, [allCidMappedEvents, mutableFollowData]);
@@ -163,7 +163,7 @@ const Home: NextPage = () => {
                 const newContents = prevContents.some(content => content.cid === cid)
                   ? prevContents
                   : [...prevContents, { cid, content: data }];
-                console.log("Updated cidContents with new content:", newContents);
+                // console.log("Updated cidContents with new content:", newContents);
                 return newContents;
               });
             }
@@ -199,13 +199,13 @@ const Home: NextPage = () => {
   // Fetching and displaying CID contents for followed addresses
   useEffect(() => {
     const fetchCidContentsForFollowedAddresses = async () => {
-      console.log("Initiating fetch for CID contents");
-      console.log("Current followedUsersCidMappedEvents:", followedUsersCidMappedEvents);
+      // console.log("Initiating fetch for CID contents");
+      // console.log("Current followedUsersCidMappedEvents:", followedUsersCidMappedEvents);
 
       if (followedUsersCidMappedEvents.length > 0) {
         const contents = await Promise.all(
           followedUsersCidMappedEvents.map(async event => {
-            console.log(`Fetching content for CID: ${event.cid}`);
+            // console.log(`Fetching content for CID: ${event.cid}`);
             try {
               const url = `https://${event.cid}.ipfs.nftstorage.link/blob`;
               const response = await fetch(url);
@@ -215,7 +215,7 @@ const Home: NextPage = () => {
               }
 
               const data = await response.json();
-              console.log(`Fetched content for CID ${event.cid}:`, data);
+              // console.log(`Fetched content for CID ${event.cid}:`, data);
               return { cid: event.cid, content: data };
             } catch (error) {
               console.error(`Error fetching content for CID ${event.cid}:`, error);
@@ -224,7 +224,7 @@ const Home: NextPage = () => {
           }),
         );
 
-        console.log("Fetched contents for all followed CIDs:", contents);
+        // console.log("Fetched contents for all followed CIDs:", contents);
         setCidContents(contents.filter((item): item is CidContent => item !== null));
         setIsLoading(false);
       }
@@ -260,6 +260,9 @@ const Home: NextPage = () => {
       console.error(`Error unfollowing address ${addressToUnfollow}:`, error);
     }
   };
+
+  // TO DO: Tipping functionality
+  const handleTipping = async (addressToTip: string) => { }
 
   return (
     <>
@@ -346,6 +349,13 @@ const Home: NextPage = () => {
                                 title="Unfollow Address"
                               >
                                 <TrashIcon className="h-5 w-5" />
+                              </button>
+                              <button
+                                className="btn btn-circle btn-ghost h-6 w-6 bg-base-200 bg-opacity-80 z-0 min-h-0 ml-1"
+                                onClick={() => handleTipping(postCreator ?? "")}
+                                title="Tip Address"
+                              >
+                                <CurrencyDollarIcon className="h-5 w-5" />
                               </button>
                             </div>
                             <div className="post-info-item flex items-center">

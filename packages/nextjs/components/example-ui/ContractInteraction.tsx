@@ -62,7 +62,7 @@ export const ContractInteraction = () => {
       if (response.ok) {
         const data = await response.json();
         const cid = data.value.cid;
-        console.log(`Uploaded to NFT.Storage - CID: ${cid}`);
+        // console.log(`Uploaded to NFT.Storage - CID: ${cid}`);
 
         // Call writeCIDAsync with the CID when it's available
         try {

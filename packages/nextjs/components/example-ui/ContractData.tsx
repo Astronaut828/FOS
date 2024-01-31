@@ -59,6 +59,7 @@ export const ContractData = () => {
     }
   }, [cidsData]);
 
+  // Fetch the content for each CID
   useEffect(() => {
     const fetchCidContents = async () => {
       const contents = await Promise.all(
